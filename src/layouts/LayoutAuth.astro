@@ -1,0 +1,32 @@
+---
+import { Image } from "astro:assets"
+import image from "../assets/image.png"
+import "../styles/global.css"
+
+interface Props {
+  title: string
+}
+const { title } = Astro.props
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="favicon.svg" />
+    <title>UTP+mentor - {title}</title>
+  </head>
+  <body>
+    <div
+      class="grid md:grid-cols-2 items-center justify-center max-w-7xl mx-auto md:px-8 sm:px-6 px-4 py-5 h-dvh"
+    >
+      <div class="h-fit max-md:hidden">
+        <Image src={image} alt="" class="w-full max-w-2xl" />
+      </div>
+      <main class="h-fit">
+        <slot />
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,26 @@
+---
+import LogoMentor from "../components/LogoMentor.astro"
+import LayoutAuth from "../layouts/LayoutAuth.astro"
+import RegisterForm from "../components/RegisterForm.astro"
+---
+
+<LayoutAuth
+  title="Registrate ahora, y descubre toda el material educativo que tenemos para ti!"
+>
+  <h1 class="sr-only">
+    Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit iure tenetur
+    quae debitis, temporibus aut earum delectus illo aliquid id!
+  </h1>
+  <LogoMentor />
+  <section class="mt-5 max-w-md mx-auto">
+    <h2 class="text-4xl font-bold">¡Crea tu cuenta ahora!</h2>
+    <p class="text-black/90 mt-3">
+      Completa los siguientes datos para <strong>registrarte.</strong>
+    </p>
+    <RegisterForm />
+    <p class="text-center">
+      ¿Ya tienes una cuenta?
+      <a href="/login" class="text-violet-700">Inicia sesión aquí</a>
+    </p>
+  </section>
+</LayoutAuth>

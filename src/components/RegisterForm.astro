@@ -1,0 +1,147 @@
+<form id="registerForm" class="mt-5 grid md:grid-cols-2 grid-cols-1 gap-3">
+  <fieldset>
+    <label for="nombre">Nombre</label>
+    <input name="nombre" type="text" placeholder="Ingresa tu nombre" required />
+  </fieldset>
+
+  <fieldset>
+    <label for="apellido">Apellido</label>
+    <input
+      name="apellido"
+      type="text"
+      placeholder="Ingresa tus apellidos"
+      required
+    />
+  </fieldset>
+
+  <fieldset class="md:col-span-2">
+    <label for="dni">DNI</label>
+    <input
+      name="dni"
+      type="text"
+      placeholder="Ingresa tu número de DNI"
+      required
+      pattern="[0-9]{8}"
+      title="Ingrese 8 dígitos"
+    />
+  </fieldset>
+
+  <fieldset class="md:col-span-2">
+    <label for="correo">Correo</label>
+    <input
+      name="correo"
+      type="email"
+      placeholder="Ingresa tu correo electrónico"
+      required
+    />
+  </fieldset>
+
+  <fieldset class="md:col-span-2">
+    <label for="contraseña">Contraseña</label>
+    <input
+      name="contraseña"
+      type="password"
+      placeholder="Ingresa tu contraseña"
+      required
+      minlength="8"
+    />
+  </fieldset>
+
+  <button
+    type="submit"
+    class="bg-violet-700 hover:bg-violet-900 transition duration-300 text-white rounded-lg md:col-span-2 mx-5 py-2 block cursor-pointer"
+  >
+    Registrarme
+  </button>
+</form>
+
+<script>
+  const registerForm = document.getElementById(
+    "registerForm"
+  ) as HTMLFormElement | null
+
+  if (registerForm) {
+    registerForm.addEventListener("submit", async (e) => {
+      e.preventDefault()
+
+      const form = e.currentTarget as HTMLFormElement
+      const formData = new FormData(form)
+      const data = Object.fromEntries(formData.entries())
+
+      const nombre = data.nombre.toString().trim()
+      const apellido = data.apellido.toString().trim()
+      const dni = data.dni.toString().trim()
+      const correo = data.correo.toString().trim()
+      const contraseña = data.contraseña.toString()
+
+      if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(nombre)) {
+        alert("Nombre solo debe contener letras")
+        return
+      }
+
+      if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(apellido)) {
+        alert("Apellido solo debe contener letras")
+        return
+      }
+
+      if (!/^\d{8}$/.test(dni)) {
+        alert("DNI debe tener 8 dígitos numéricos")
+        return
+      }
+
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+        alert("Correo electrónico inválido")
+        return
+      }
+
+      if (contraseña.length < 8) {
+        alert("La contraseña debe tener al menos 8 caracteres")
+        return
+      }
+
+      try {
+        const response = await fetch("/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            nombre,
+            apellido,
+            dni,
+            correo,
+            contraseña,
+          }),
+        })
+
+        if (!response.ok) {
+          const error = await response.json()
+          throw new Error(error.error || "Error en el registro")
+        }
+
+        window.location.href = "/login"
+      } catch (error) {
+        if (error instanceof Error) {
+          alert(error.message)
+        } else {
+          alert("Error desconocido")
+        }
+      }
+    })
+  } else {
+    console.error("Formulario no encontrado")
+  }
+</script>
+
+<style>
+  @reference "../styles/global.css";
+
+  fieldset {
+    @apply flex flex-col;
+
+    > label {
+      @apply font-semibold ml-1 mb-0.5;
+    }
+    > input {
+      @apply border rounded-lg py-2 px-1 w-full placeholder:pl-1;
+    }
+  }
+</style>
