@@ -1,0 +1,99 @@
+<form id="loginForm" class="mt-4 grid grid-cols-1 gap-5">
+  <fieldset>
+    <label for="correo">Correo</label>
+    <input
+      name="correo"
+      type="text"
+      placeholder="Ingresa tu correo electrónico"
+      required
+    />
+  </fieldset>
+
+  <fieldset>
+    <label for="contraseña">Contraseña</label>
+    <input
+      name="contraseña"
+      type="password"
+      placeholder="Ingresa tu contraseña"
+      required
+    />
+  </fieldset>
+
+  <button
+    type="submit"
+    class="bg-violet-700 hover:bg-violet-900 transition duration-300 mt-4 text-white rounded-lg mx-5 py-2 block cursor-pointer"
+  >
+    Iniciar Sesión
+  </button>
+</form>
+
+<script>
+  const loginForm = document.getElementById(
+    "loginForm"
+  ) as HTMLFormElement | null
+
+  if (loginForm) {
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault()
+
+      const form = e.currentTarget as HTMLFormElement
+      const formData = new FormData(form)
+      const data = Object.fromEntries(formData.entries())
+
+      const correo = data.correo.toString().trim()
+      const contraseña = data.contraseña.toString()
+
+      // if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+      //   alert("Correo electrónico inválido")
+      //   return
+      // }
+
+      // if (contraseña.length < 8) {
+      //   alert("La contraseña debe tener al menos 8 caracteres")
+      //   return
+      // }
+
+      try {
+        const response = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            correo,
+            contraseña,
+          }),
+        })
+
+        if (!response.ok) {
+          const error = await response.json()
+          throw new Error(error.error || "Error en el inicio de sesión")
+        }
+
+        const result = await response.json()
+        window.location.href = result.redirectTo
+      } catch (error) {
+        if (error instanceof Error) {
+          alert(error.message)
+        } else {
+          alert("Error desconocido")
+        }
+      }
+    })
+  } else {
+    console.error("Formulario no encontrado")
+  }
+</script>
+
+<style>
+  @reference "../styles/global.css";
+
+  fieldset {
+    @apply flex flex-col;
+
+    > label {
+      @apply font-semibold ml-1 mb-0.5;
+    }
+    > input {
+      @apply border rounded-lg py-2 px-1 w-full placeholder:pl-1;
+    }
+  }
+</style>
