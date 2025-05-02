@@ -1,0 +1,189 @@
+---
+interface UserInfo {
+  nombre?: string
+  apellido?: string
+  correo?: string
+  dni?: string
+  rol?: "ALUMNO" | "PROFESOR" | "ADMINISTRADOR"
+}
+const userInfoCookie = Astro.cookies.get("userInfo")?.value
+let userInfo: UserInfo = {}
+
+let userName = ""
+let userLastname = ""
+let userEmail = ""
+let userDni = ""
+let userRol: UserInfo["rol"] = undefined
+if (userInfoCookie) {
+  userInfo = JSON.parse(decodeURIComponent(userInfoCookie))
+  const { nombre, apellido, correo, dni, rol } = userInfo
+  userName = nombre || ""
+  userLastname = apellido || ""
+  userEmail = correo || ""
+  userDni = dni || ""
+  userRol = rol
+}
+---
+
+<form id="updateUserForm" class="mt-5 grid md:grid-cols-2 grid-cols-1 gap-3">
+  <fieldset>
+    <label for="nombre">Nombre</label>
+    <input
+      name="nombre"
+      type="text"
+      placeholder="Ingresa el nombre"
+      required
+      value={userName}
+    />
+  </fieldset>
+
+  <fieldset>
+    <label for="apellido">Apellido</label>
+    <input
+      name="apellido"
+      type="text"
+      placeholder="Ingresa el apellido"
+      required
+      value={userLastname}
+    />
+  </fieldset>
+
+  <fieldset class="md:col-span-2">
+    <label for="dni">DNI</label>
+    <input
+      name="dni"
+      type="text"
+      placeholder="Ingresa el DNI"
+      required
+      pattern="[0-9]{8}"
+      title="8 dígitos"
+      value={userDni}
+    />
+  </fieldset>
+
+  <fieldset class="md:col-span-2">
+    <label for="correo">Correo</label>
+    <input
+      name="correo"
+      type="email"
+      placeholder="Ingresa el correo"
+      required
+      value={userEmail}
+    />
+  </fieldset>
+
+  <fieldset class="md:col-span-2">
+    <label for="contraseña">Contraseña</label>
+    <input
+      name="contraseña"
+      type="password"
+      placeholder="Ingresa la contraseña"
+      required
+      minlength="8"
+      autocomplete="new-password"
+    />
+  </fieldset>
+
+  <button
+    type="submit"
+    class="bg-violet-700 hover:bg-violet-900 transition duration-300 text-white rounded-lg md:col-span-2 mx-5 py-2 block cursor-pointer"
+  >
+    Actualizar
+  </button>
+</form>
+
+<script>
+  const updateUserForm = document.getElementById("updateUserForm")
+
+  if (updateUserForm) {
+    updateUserForm.addEventListener("submit", async (e) => {
+      e.preventDefault()
+
+      const form = e.currentTarget as HTMLFormElement | null
+
+      if (!form) {
+        alert("Formulario no encontrado")
+        return
+      }
+
+      const formData = new FormData(form)
+      const data = Object.fromEntries(formData.entries())
+
+      const nombre = data.nombre.toString().trim()
+      const apellido = data.apellido.toString().trim()
+      const dni = data.dni.toString().trim()
+      const correo = data.correo.toString().trim()
+      const contraseña = data.contraseña.toString()
+
+      if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(nombre)) {
+        alert("Nombre solo debe contener letras")
+        return
+      }
+
+      if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(apellido)) {
+        alert("Apellido solo debe contener letras")
+        return
+      }
+
+      // if (!/^\d{8}$/.test(dni)) {
+      //   alert("DNI debe tener 8 dígitos numéricos")
+      //   return
+      // }
+
+      // if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+      //   alert("Correo electrónico inválido")
+      //   return
+      // }
+
+      // if (contraseña.length < 8) {
+      //   alert("La contraseña debe tener al menos 8 caracteres")
+      //   return
+      // }
+
+      try {
+        const res = await fetch("/api/auth/updateUser", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            nombre,
+            apellido,
+            dni,
+            correo,
+            contraseña,
+          }),
+        })
+
+        if (!res.ok) {
+          const error = await res.json()
+          throw new Error(error.error || "Error al actualizar usuario")
+        }
+
+        alert("Usuario actualizado correctamente")
+        form.reset()
+      } catch (err) {
+        if (err instanceof Error) {
+          alert(err.message)
+        } else {
+          alert("Error desconocido")
+        }
+      }
+    })
+  }
+</script>
+
+<style>
+  @reference "../styles/global.css";
+
+  fieldset {
+    @apply flex flex-col;
+
+    > label {
+      @apply font-semibold ml-1 mb-0.5;
+    }
+
+    > input,
+    > select {
+      @apply border rounded-lg py-2 px-1 w-full placeholder:pl-1;
+    }
+  }
+</style>

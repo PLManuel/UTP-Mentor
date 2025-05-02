@@ -1,0 +1,29 @@
+# Tipos de commit comunes (elige uno y reemplaza <tipo>):
+#
+# feat:     Nueva funcionalidad
+# fix:      Corrección de error/bug
+# docs:     Documentación únicamente
+# style:    Cambios de formato (indentación, espacios, etc.)
+# refactor: Mejora interna del código sin cambiar comportamiento
+# test:     Agrega o ajusta pruebas
+# chore:    Cambios que no afectan la lógica del código (builds, configs, etc.)
+
+<tipo>: breve descripción del cambio en presente, sin punto final
+
+# Ejemplos:
+# feat: agrega validación de email en formulario de registro
+# fix: corrige error de render en el componente Header
+# refactor: separa lógica de autenticación en un hook
+
+# --- Opcional: descripción extendida ---
+#
+# Explica el motivo del cambio y cómo se implementó.
+# Usa viñetas si hay múltiples puntos importantes:
+# - Agrega validación de email y longitud mínima en el frontend
+# - Refactoriza función handleSubmit para mayor claridad
+# - No afecta la API ni rompe funcionalidades anteriores
+#
+# También puedes mencionar issues relacionados:
+# Closes #12, relates to #8
+
+# Los comentarios (líneas que comienzan con '#') serán ignorados.
