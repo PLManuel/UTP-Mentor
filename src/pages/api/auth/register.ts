@@ -30,8 +30,6 @@ export const POST: APIRoute = async ({ request }) => {
       contraseña: data.contraseña,
     }
 
-    if (import.meta.env.DEV) console.log("Payload:", JSON.stringify(payload))
-
     const response = await fetch(
       "http://localhost:8080/usuario/registro/alumno",
       {
