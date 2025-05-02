@@ -1,0 +1,24 @@
+---
+import LogoMentor from "../components/LogoMentor.astro"
+import LayoutAuth from "../layouts/LayoutAuth.astro"
+import LoginForm from "../components/LoginForm.astro"
+---
+
+<LayoutAuth title="Inicia sesion y disfruta de todos los recursos disponibles!">
+  <h1 class="sr-only">
+    Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit iure tenetur
+    quae debitis, temporibus aut earum delectus illo aliquid id!
+  </h1>
+  <LogoMentor />
+  <section class="mt-5 max-w-md mx-auto">
+    <h2 class="text-4xl font-bold">¡Bienvenido👋!</h2>
+    <p class="text-black/90 mt-4">
+      Ingresa tus datos para <strong>iniciar sesión.</strong>
+    </p>
+    <LoginForm />
+    <p class="text-center">
+      ¿No tienes una cuenta?
+      <a href="/register" class="text-violet-700">Registrate aquí</a>
+    </p>
+  </section>
+</LayoutAuth>
