@@ -1,11 +1,57 @@
 ---
 import "../styles/global.css"
 
+interface UserInfo {
+  nombre?: string
+  apellido?: string
+  correo?: string
+  dni?: string
+  rol?: "ALUMNO" | "DOCENTE" | "ADMINISTRADOR"
+}
+
 interface Props {
   title: string
 }
+
 const { title } = Astro.props
+
+const userInfoCookie = Astro.cookies.get("userInfo")?.value
+let userInfo: UserInfo = {}
+let basePath = "/"
+
+let userName = "Usuario"
+let userEmail = ""
+let userDni = ""
+let userRol: UserInfo["rol"] = undefined
+
+try {
+  if (userInfoCookie) {
+    userInfo = JSON.parse(decodeURIComponent(userInfoCookie))
+
+    const { nombre, apellido, correo, dni, rol } = userInfo
+
+    userName = [nombre, apellido].filter(Boolean).join(" ") || "Usuario"
+    userEmail = correo || ""
+    userDni = dni || ""
+    userRol = rol
+
+    switch (rol) {
+      case "ADMINISTRADOR":
+        basePath = "/dashboard"
+        break
+      case "ALUMNO":
+      case "DOCENTE":
+        basePath = "/resources"
+        break
+      default:
+        basePath = "/"
+    }
+  }
+} catch (err) {
+  console.error("Error al parsear userInfo:", err)
+}
 ---
+
 
 <!doctype html>
 <html lang="es">
@@ -15,7 +61,162 @@ const { title } = Astro.props
     <link rel="shortcut icon" href="favicon.svg" />
     <title>UTP+mentor - {title}</title>
   </head>
-  <body>
-    <slot />
+  <body class="flex h-screen bg-gray-100">
+    <aside class="w-64 bg-white shadow-md flex flex-col h-full">
+      <div class="p-4 border-b">
+        <div class="flex items-center space-x-3">
+          <div
+            class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center"
+          >
+            <span class="text-gray-600 font-bold"></span>
+          </div>
+          <div>
+            <p class="font-medium">{userEmail}</p>
+            <p class="text-xs text-gray-500">{userRol}</p>
+          </div>
+        </div>
+      </div>
+
+      <nav class="flex-1 p-4">
+        <ul class="space-y-2">
+          <li>
+            <a
+              href={basePath}
+              class="flex items-center p-2 rounded hover:bg-gray-100 text-gray-700"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 mr-3"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                ></path>
+              </svg>
+              Inicio
+            </a>
+          </li>
+          <li>
+            <a
+              href=`${basePath}/usuarios`
+              class="flex items-center p-2 rounded hover:bg-gray-100 text-gray-700"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 mr-3"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                ></path>
+              </svg>
+              Usuarios
+            </a>
+          </li>
+          <!-- <li>
+            <a
+              href="/cursos"
+              class="flex items-center p-2 rounded hover:bg-gray-100 text-gray-700"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 mr-3"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                ></path>
+              </svg>
+              Cursos
+            </a>
+          </li>
+          <li>
+            <a
+              href="/mentores"
+              class="flex items-center p-2 rounded hover:bg-gray-100 text-gray-700"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 mr-3"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                ></path>
+              </svg>
+              Mentores
+            </a>
+          </li> -->
+        </ul>
+      </nav>
+
+      <div class="p-4 border-t">
+        <button
+          id="logoutBtn"
+          class="w-full bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 flex items-center justify-center"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 mr-2"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+            ></path>
+          </svg>
+          Cerrar sesión
+        </button>
+      </div>
+    </aside>
+
+    <main class="flex-1 p-6 overflow-auto">
+      <slot />
+    </main>
+
+    <script>
+      const logoutBtn = document.getElementById("logoutBtn")
+
+      logoutBtn?.addEventListener("click", async () => {
+        try {
+          const res = await fetch("/api/auth/logout", {
+            method: "POST",
+          })
+
+          if (res.ok) {
+            window.location.href = "/login"
+          } else {
+            alert("Error al cerrar sesión")
+          }
+        } catch (err) {
+          console.error("Logout error:", err)
+          alert("Error inesperado al cerrar sesión")
+        }
+      })
+    </script>
   </body>
 </html>
