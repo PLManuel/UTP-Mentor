@@ -1,8 +1,27 @@
 ---
-import RegisterFormAdmin from "../../components/RegisterFormAdmin.astro"
+// import RegisterFormAdmin from "../../components/RegisterFormAdmin.astro"
 import Layout from "../../layouts/Layout.astro"
 ---
 
 <Layout title="">
-
+    <!-- <RegisterFormAdmin /> -->
+    <div class="flex flex-col gap-4">
+        <h1 class="text-2xl font-bold">Usuarios</h1>
+        <div class="overflow-x-auto">
+        <table class="w-full table-auto border-collapse border border-gray-300">
+            <thead>
+            <tr class="bg-gray-100">
+                <th class="border border-gray-300 px-4 py-2">Nombre</th>
+                <th class="border border-gray-300 px-4 py-2">Apellido</th>
+                <th class="border border-gray-300 px-4 py-2">Correo</th>
+                <th class="border border-gray-300 px-4 py-2">DNI</th>
+                <th class="border border-gray-300 px-4 py-2">Rol</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Aquí puedes agregar filas dinámicamente con JavaScript o un framework de tu elección -->
+            <tr>
+                <td class="border border-gray-300 px-4 py-2">Juan</td>
+                <td class="border border-gray-300 px-4 py-2">Pérez</td>
+                <td class="border border-gray-300 px-4 py-2">       </td>
 </Layout>
