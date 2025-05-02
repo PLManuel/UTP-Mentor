@@ -1,57 +1,56 @@
 ---
-import plus from "../assets/plus.png";
-import "../styles/global.css";
+import "../styles/global.css"
 
 interface UserInfo {
-  nombre?: string;
-  apellido?: string;
-  correo?: string;
-  dni?: string;
-  rol?: "ALUMNO" | "DOCENTE" | "ADMINISTRADOR";
+  nombre?: string
+  apellido?: string
+  correo?: string
+  dni?: string
+  rol?: "ALUMNO" | "DOCENTE" | "ADMINISTRADOR"
 }
 
 interface Props {
-  title: string;
+  title: string
 }
 
-const { title } = Astro.props;
+const { title } = Astro.props
 
-const userInfoCookie = Astro.cookies.get("userInfo")?.value;
-let userInfo: UserInfo = {};
-let basePath = "/";
+const userInfoCookie = Astro.cookies.get("userInfo")?.value
+let userInfo: UserInfo = {}
+let basePath = "/"
 
-let userName = "Usuario";
-let userEmail = "";
-let userDni = "";
-let userRol: UserInfo["rol"] = undefined;
+let userName = "Usuario"
+let userEmail = ""
+let userDni = ""
+let userRol: UserInfo["rol"] = undefined
 
 try {
   if (userInfoCookie) {
-    userInfo = JSON.parse(decodeURIComponent(userInfoCookie));
+    userInfo = JSON.parse(decodeURIComponent(userInfoCookie))
 
-    const { nombre, apellido, correo, dni, rol } = userInfo;
+    const { nombre, apellido, correo, dni, rol } = userInfo
 
-    userName = [nombre, apellido].filter(Boolean).join(" ") || "Usuario";
-    userEmail = correo || "";
-    userDni = dni || "";
-    userRol = rol;
+    userName = [nombre, apellido].filter(Boolean).join(" ") || "Usuario"
+    userEmail = correo || ""
+    userDni = dni || ""
+    userRol = rol
 
     switch (rol) {
       case "ADMINISTRADOR":
-        basePath = "/dashboard";
-        break;
+        basePath = "/dashboard"
+        break
       case "ALUMNO":
-        basePath = "/resources";
-        break;
+        basePath = "/resources"
+        break
       case "DOCENTE":
-        basePath = "/resources";
-        break;
+        basePath = "/resources"
+        break
       default:
-        basePath = "/";
+        basePath = "/"
     }
   }
 } catch (err) {
-  console.error("Error al parsear userInfo:", err);
+  console.error("Error al parsear userInfo:", err)
 }
 ---
 
@@ -219,57 +218,56 @@ try {
     </main>
 
     <script>
-      const sidebar = document.getElementById("sidebar");
-      const menuToggle = document.getElementById("menuToggle");
-      const closeSidebar = document.getElementById("closeSidebar");
-      const sidebarBackdrop = document.getElementById("sidebarBackdrop");
-      const logoutBtn = document.getElementById("logoutBtn");
+      const sidebar = document.getElementById("sidebar")
+      const menuToggle = document.getElementById("menuToggle")
+      const closeSidebar = document.getElementById("closeSidebar")
+      const sidebarBackdrop = document.getElementById("sidebarBackdrop")
+      const logoutBtn = document.getElementById("logoutBtn")
 
       menuToggle?.addEventListener("click", () => {
-        sidebar?.classList.toggle("-translate-x-full");
-        sidebarBackdrop?.classList.toggle("hidden");
-        document.body.classList.toggle("overflow-hidden");
-      });
+        sidebar?.classList.toggle("-translate-x-full")
+        sidebarBackdrop?.classList.toggle("hidden")
+        document.body.classList.toggle("overflow-hidden")
+      })
 
       closeSidebar?.addEventListener("click", () => {
-        sidebar?.classList.add("-translate-x-full");
-        sidebarBackdrop?.classList.add("hidden");
-        document.body.classList.remove("overflow-hidden");
-      });
+        sidebar?.classList.add("-translate-x-full")
+        sidebarBackdrop?.classList.add("hidden")
+        document.body.classList.remove("overflow-hidden")
+      })
 
       sidebarBackdrop?.addEventListener("click", () => {
-        sidebar?.classList.add("-translate-x-full");
-        sidebarBackdrop?.classList.add("hidden");
-        document.body.classList.remove("overflow-hidden");
-      });
+        sidebar?.classList.add("-translate-x-full")
+        sidebarBackdrop?.classList.add("hidden")
+        document.body.classList.remove("overflow-hidden")
+      })
 
       window.addEventListener("resize", () => {
         if (window.innerWidth >= 1024) {
-          // lg breakpoint
-          sidebar?.classList.remove("-translate-x-full");
-          sidebarBackdrop?.classList.add("hidden");
-          document.body.classList.remove("overflow-hidden");
+          sidebar?.classList.remove("-translate-x-full")
+          sidebarBackdrop?.classList.add("hidden")
+          document.body.classList.remove("overflow-hidden")
         } else {
-          sidebar?.classList.add("-translate-x-full");
+          sidebar?.classList.add("-translate-x-full")
         }
-      });
+      })
 
       logoutBtn?.addEventListener("click", async () => {
         try {
           const res = await fetch("/api/auth/logout", {
             method: "POST",
-          });
+          })
 
           if (res.ok) {
-            window.location.href = "/login";
+            window.location.href = "/login"
           } else {
-            alert("Error al cerrar sesión");
+            alert("Error al cerrar sesión")
           }
         } catch (err) {
-          console.error("Logout error:", err);
-          alert("Error inesperado al cerrar sesión");
+          console.error("Logout error:", err)
+          alert("Error inesperado al cerrar sesión")
         }
-      });
+      })
     </script>
   </body>
 </html>
