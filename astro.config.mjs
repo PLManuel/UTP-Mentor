@@ -6,6 +6,9 @@ import vercel from "@astrojs/vercel"
 
 // https://astro.build/config
 export default defineConfig({
+  redirects: {
+    "/": "/login",
+  },
   vite: {
     plugins: [tailwindcss()],
   },

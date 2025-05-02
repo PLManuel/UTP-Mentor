@@ -53,6 +53,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
           nombre: responseData.nombre,
           apellido: responseData.apellido,
           correo: responseData.correo,
+          dni: responseData.dni,
           rol: responseData.rol,
         })
       ),

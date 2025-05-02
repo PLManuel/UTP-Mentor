@@ -1,0 +1,165 @@
+<form id="registerAdminForm" class="mt-5 grid md:grid-cols-2 grid-cols-1 gap-3">
+  <fieldset>
+    <label for="nombre">Nombre</label>
+    <input name="nombre" type="text" placeholder="Ingresa el nombre" required />
+  </fieldset>
+
+  <fieldset>
+    <label for="apellido">Apellido</label>
+    <input
+      name="apellido"
+      type="text"
+      placeholder="Ingresa el apellido"
+      required
+    />
+  </fieldset>
+
+  <fieldset class="md:col-span-2">
+    <label for="dni">DNI</label>
+    <input
+      name="dni"
+      type="text"
+      placeholder="Ingresa el DNI"
+      required
+      pattern="[0-9]{8}"
+      title="8 dígitos"
+    />
+  </fieldset>
+
+  <fieldset class="md:col-span-2">
+    <label for="correo">Correo</label>
+    <input
+      name="correo"
+      type="email"
+      placeholder="Ingresa el correo"
+      required
+      autocomplete="off"
+    />
+  </fieldset>
+
+  <fieldset class="md:col-span-2">
+    <label for="contraseña">Contraseña</label>
+    <input
+      name="contraseña"
+      type="password"
+      placeholder="Ingresa la contraseña"
+      required
+      minlength="8"
+      autocomplete="new-password"
+    />
+  </fieldset>
+
+  <fieldset class="md:col-span-2">
+    <label for="rol">Rol</label>
+    <select name="rol" required>
+      <option value="">Selecciona un rol</option>
+      <option value="ALUMNO">ALUMNO</option>
+      <option value="PROFESOR">PROFESOR</option>
+      <option value="ADMINISTRADOR">ADMINISTRADOR</option>
+    </select>
+  </fieldset>
+
+  <button
+    type="submit"
+    class="bg-violet-700 hover:bg-violet-900 transition duration-300 text-white rounded-lg md:col-span-2 mx-5 py-2 block cursor-pointer"
+  >
+    Registrar Usuario
+  </button>
+</form>
+
+<script>
+  const registerAdminForm = document.getElementById("registerAdminForm")
+
+  if (registerAdminForm) {
+    registerAdminForm.addEventListener("submit", async (e) => {
+      e.preventDefault()
+
+      const form = e.currentTarget as HTMLFormElement
+      const formData = new FormData(form)
+      const data = Object.fromEntries(formData.entries())
+
+      const nombre = data.nombre.toString().trim()
+      const apellido = data.apellido.toString().trim()
+      const dni = data.dni.toString().trim()
+      const correo = data.correo.toString().trim()
+      const contraseña = data.contraseña.toString()
+      const rol = data.rol.toString()
+
+      if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(nombre)) {
+        alert("Nombre solo debe contener letras")
+        return
+      }
+
+      if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(apellido)) {
+        alert("Apellido solo debe contener letras")
+        return
+      }
+
+      if (!/^\d{8}$/.test(dni)) {
+        alert("DNI debe tener 8 dígitos numéricos")
+        return
+      }
+
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+        alert("Correo electrónico inválido")
+        return
+      }
+
+      if (contraseña.length < 8) {
+        alert("La contraseña debe tener al menos 8 caracteres")
+        return
+      }
+
+      if (!rol) {
+        alert("Debe seleccionar un rol")
+        return
+      }
+
+      try {
+        const res = await fetch("/api/auth/registerAdmin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            nombre,
+            apellido,
+            dni,
+            correo,
+            contraseña,
+            rol,
+          }),
+        })
+
+        if (!res.ok) {
+          const error = await res.json()
+          throw new Error(error.error || "Error al registrar usuario")
+        }
+
+        alert("Usuario registrado correctamente")
+        form.reset()
+      } catch (err) {
+        if (err instanceof Error) {
+          alert(err.message)
+        } else {
+          alert("Error desconocido")
+        }
+      }
+    })
+  }
+</script>
+
+<style>
+  @reference "../styles/global.css";
+
+  fieldset {
+    @apply flex flex-col;
+
+    > label {
+      @apply font-semibold ml-1 mb-0.5;
+    }
+
+    > input,
+    > select {
+      @apply border rounded-lg py-2 px-1 w-full placeholder:pl-1;
+    }
+  }
+</style>
