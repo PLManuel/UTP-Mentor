@@ -15,10 +15,6 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       contraseña: data.contraseña,
     }
 
-    if (import.meta.env.DEV) {
-      console.log("Payload:", JSON.stringify(payload))
-    }
-
     const response = await fetch("http://localhost:8080/usuario/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -26,8 +22,6 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     })
 
     const responseData = await response.json()
-
-    console.log(responseData)
 
     if (!response.ok) {
       return new Response(

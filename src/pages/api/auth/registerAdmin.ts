@@ -20,18 +20,6 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       })
     }
 
-    console.log(
-      JSON.stringify({
-        nombre: data.nombre,
-        apellido: data.apellido,
-        dni: data.dni,
-        correo: data.correo,
-        contraseña: data.contraseña,
-        rol: data.rol,
-        token: token,
-      })
-    )
-
     const response = await fetch("http://localhost:8080/usuario/registro", {
       method: "POST",
       headers: {
