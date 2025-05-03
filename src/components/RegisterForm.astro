@@ -56,48 +56,58 @@
 </form>
 
 <script>
-  const registerForm = document.getElementById(
-    "registerForm"
-  ) as HTMLFormElement | null
+  document.addEventListener("astro:page-load", () => {
+    const registerForm = document.getElementById(
+      "registerForm"
+    ) as HTMLFormElement
+    const submitButton = registerForm?.querySelector('button[type="submit"]')
 
-  if (registerForm) {
+    if (!registerForm || !submitButton) {
+      return
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    const dniRegex = /^\d{8}$/
+    const nombreApellidoRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/
+    const contraseñaMinLength = 8
+
     registerForm.addEventListener("submit", async (e) => {
       e.preventDefault()
-
-      const form = e.currentTarget as HTMLFormElement
-      const formData = new FormData(form)
+      const formData = new FormData(registerForm)
       const data = Object.fromEntries(formData.entries())
 
-      const nombre = data.nombre.toString().trim()
-      const apellido = data.apellido.toString().trim()
-      const dni = data.dni.toString().trim()
-      const correo = data.correo.toString().trim()
-      const contraseña = data.contraseña.toString()
+      const nombre = data.nombre?.toString().trim()
+      const apellido = data.apellido?.toString().trim()
+      const dni = data.dni?.toString().trim()
+      const correo = data.correo?.toString().trim()
+      const contraseña = data.contraseña?.toString()
 
-      if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(nombre)) {
+      if (!nombreApellidoRegex.test(nombre)) {
         alert("Nombre solo debe contener letras")
         return
       }
 
-      if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(apellido)) {
+      if (!nombreApellidoRegex.test(apellido)) {
         alert("Apellido solo debe contener letras")
         return
       }
 
-      if (!/^\d{8}$/.test(dni)) {
+      if (!dniRegex.test(dni)) {
         alert("DNI debe tener 8 dígitos numéricos")
         return
       }
 
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+      if (!emailRegex.test(correo)) {
         alert("Correo electrónico inválido")
         return
       }
 
-      if (contraseña.length < 8) {
+      if (contraseña.length < contraseñaMinLength) {
         alert("La contraseña debe tener al menos 8 caracteres")
         return
       }
+
+      submitButton.setAttribute("disabled", "true")
 
       try {
         const response = await fetch("/api/auth/register", {
@@ -124,11 +134,11 @@
         } else {
           alert("Error desconocido")
         }
+      } finally {
+        submitButton.removeAttribute("disabled")
       }
     })
-  } else {
-    console.error("Formulario no encontrado")
-  }
+  })
 </script>
 
 <style>
