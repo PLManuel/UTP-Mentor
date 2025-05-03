@@ -3,7 +3,7 @@
     <label for="correo">Correo</label>
     <input
       name="correo"
-      type="text"
+      type="email"
       placeholder="Ingresa tu correo electrónico"
       required
     />
@@ -16,6 +16,7 @@
       type="password"
       placeholder="Ingresa tu contraseña"
       required
+      minlength="8"
     />
   </fieldset>
 
@@ -28,39 +29,43 @@
 </form>
 
 <script>
-  const loginForm = document.getElementById(
-    "loginForm"
-  ) as HTMLFormElement | null
+  document.addEventListener("astro:page-load", () => {
+    const loginForm = document.getElementById("loginForm") as HTMLFormElement
+    const submitButton = loginForm?.querySelector('button[type="submit"]')
 
-  if (loginForm) {
+    if (!loginForm || !submitButton) {
+      return
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
     loginForm.addEventListener("submit", async (e) => {
       e.preventDefault()
-
-      const form = e.currentTarget as HTMLFormElement
-      const formData = new FormData(form)
+      const formData = new FormData(loginForm)
       const data = Object.fromEntries(formData.entries())
 
-      const correo = data.correo.toString().trim()
-      const contraseña = data.contraseña.toString()
+      const correo = data.correo?.toString().trim()
+      const contraseña = data.contraseña?.toString()
 
-      // if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
-      //   alert("Correo electrónico inválido")
-      //   return
-      // }
+      if (!emailRegex.test(correo)) {
+        alert("Correo electrónico inválido")
+        return
+      }
 
-      // if (contraseña.length < 8) {
-      //   alert("La contraseña debe tener al menos 8 caracteres")
-      //   return
-      // }
+      if (contraseña.length < 8) {
+        alert("La contraseña debe tener al menos 8 caracteres")
+        return
+      }
+
+      submitButton.setAttribute("disabled", "true")
+      submitButton.classList.add("opacity-50", "cursor-not-allowed")
+      submitButton.textContent = "Iniciando sesión..."
 
       try {
         const response = await fetch("/api/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            correo,
-            contraseña,
-          }),
+          body: JSON.stringify({ correo, contraseña }),
         })
 
         if (!response.ok) {
@@ -76,11 +81,13 @@
         } else {
           alert("Error desconocido")
         }
+      } finally {
+        submitButton.removeAttribute("disabled")
+        submitButton.classList.remove("opacity-50", "cursor-not-allowed")
+        submitButton.textContent = "Iniciar Sesión"
       }
     })
-  } else {
-    console.error("Formulario no encontrado")
-  }
+  })
 </script>
 
 <style>

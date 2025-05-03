@@ -68,14 +68,28 @@
 </form>
 
 <script>
-  const registerAdminForm = document.getElementById("registerAdminForm")
+  document.addEventListener("astro:page-load", () => {
+    const registerAdminForm = document.getElementById(
+      "registerAdminForm"
+    ) as HTMLFormElement
+    const submitButton = registerAdminForm?.querySelector(
+      'button[type="submit"]'
+    )
 
-  if (registerAdminForm) {
+    if (!registerAdminForm || !submitButton) {
+      return
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    const dniRegex = /^\d{8}$/
+    const nombreApellidoRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/
+    const contraseñaMinLength = 8
+    const rolOptions = ["ALUMNO", "PROFESOR", "ADMINISTRADOR"]
+
     registerAdminForm.addEventListener("submit", async (e) => {
       e.preventDefault()
 
-      const form = e.currentTarget as HTMLFormElement
-      const formData = new FormData(form)
+      const formData = new FormData(registerAdminForm)
       const data = Object.fromEntries(formData.entries())
 
       const nombre = data.nombre.toString().trim()
@@ -85,36 +99,37 @@
       const contraseña = data.contraseña.toString()
       const rol = data.rol.toString()
 
-      if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(nombre)) {
+      if (!nombreApellidoRegex.test(nombre)) {
         alert("Nombre solo debe contener letras")
         return
       }
 
-      if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(apellido)) {
+      if (!nombreApellidoRegex.test(apellido)) {
         alert("Apellido solo debe contener letras")
         return
       }
 
-      if (!/^\d{8}$/.test(dni)) {
+      if (!dniRegex.test(dni)) {
         alert("DNI debe tener 8 dígitos numéricos")
         return
       }
 
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+      if (!emailRegex.test(correo)) {
         alert("Correo electrónico inválido")
         return
       }
 
-      if (contraseña.length < 8) {
+      if (contraseña.length < contraseñaMinLength) {
         alert("La contraseña debe tener al menos 8 caracteres")
         return
       }
 
-      if (!rol) {
-        alert("Debe seleccionar un rol")
+      if (!rolOptions.includes(rol)) {
+        alert("Debe seleccionar un rol válido")
         return
       }
 
+      submitButton.setAttribute("disabled", "true")
       try {
         const res = await fetch("/api/auth/registerAdmin", {
           method: "POST",
@@ -135,16 +150,18 @@
         }
 
         alert("Usuario registrado correctamente")
-        form.reset()
+        registerAdminForm.reset()
       } catch (err) {
         if (err instanceof Error) {
           alert(err.message)
         } else {
           alert("Error desconocido")
         }
+      } finally {
+        submitButton.removeAttribute("disabled")
       }
     })
-  }
+  })
 </script>
 
 <style>

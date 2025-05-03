@@ -4,25 +4,19 @@ interface UserInfo {
   apellido?: string
   correo?: string
   dni?: string
-  rol?: "ALUMNO" | "PROFESOR" | "ADMINISTRADOR"
 }
-const userInfoCookie = Astro.cookies.get("userInfo")?.value
-let userInfo: UserInfo = {}
 
-let userName = ""
-let userLastname = ""
-let userEmail = ""
-let userDni = ""
-let userRol: UserInfo["rol"] = undefined
-if (userInfoCookie) {
-  userInfo = JSON.parse(decodeURIComponent(userInfoCookie))
-  const { nombre, apellido, correo, dni, rol } = userInfo
-  userName = nombre || ""
-  userLastname = apellido || ""
-  userEmail = correo || ""
-  userDni = dni || ""
-  userRol = rol
-}
+const userInfoCookie = Astro.cookies.get("userInfo")?.value
+const userInfo: UserInfo = userInfoCookie
+  ? JSON.parse(decodeURIComponent(userInfoCookie))
+  : {}
+
+const {
+  nombre: userName = "",
+  apellido: userLastname = "",
+  correo: userEmail = "",
+  dni: userDni = "",
+} = userInfo
 ---
 
 <form id="updateUserForm" class="mt-5 grid md:grid-cols-2 grid-cols-1 gap-3">
@@ -93,20 +87,24 @@ if (userInfoCookie) {
 </form>
 
 <script>
-  const updateUserForm = document.getElementById("updateUserForm")
+  document.addEventListener("astro:page-load", () => {
+    const updateUserForm = document.getElementById(
+      "updateUserForm"
+    ) as HTMLFormElement
+    const submitButton = updateUserForm?.querySelector('button[type="submit"]')
 
-  if (updateUserForm) {
+    if (!updateUserForm || !submitButton) {
+      return
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    const dniRegex = /^\d{8}$/
+    const nombreApellidoRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/
+    const contraseñaMinLength = 8
+
     updateUserForm.addEventListener("submit", async (e) => {
       e.preventDefault()
-
-      const form = e.currentTarget as HTMLFormElement | null
-
-      if (!form) {
-        alert("Formulario no encontrado")
-        return
-      }
-
-      const formData = new FormData(form)
+      const formData = new FormData(updateUserForm)
       const data = Object.fromEntries(formData.entries())
 
       const nombre = data.nombre.toString().trim()
@@ -115,30 +113,33 @@ if (userInfoCookie) {
       const correo = data.correo.toString().trim()
       const contraseña = data.contraseña.toString()
 
-      if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(nombre)) {
+      if (!nombreApellidoRegex.test(nombre)) {
         alert("Nombre solo debe contener letras")
         return
       }
 
-      if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(apellido)) {
+      if (!nombreApellidoRegex.test(apellido)) {
         alert("Apellido solo debe contener letras")
         return
       }
 
-      // if (!/^\d{8}$/.test(dni)) {
-      //   alert("DNI debe tener 8 dígitos numéricos")
-      //   return
-      // }
+      if (!dniRegex.test(dni)) {
+        alert("DNI debe tener 8 dígitos numéricos")
+        return
+      }
 
-      // if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
-      //   alert("Correo electrónico inválido")
-      //   return
-      // }
+      if (!emailRegex.test(correo)) {
+        alert("Correo electrónico inválido")
+        return
+      }
 
-      // if (contraseña.length < 8) {
-      //   alert("La contraseña debe tener al menos 8 caracteres")
-      //   return
-      // }
+      if (contraseña.length < contraseñaMinLength) {
+        alert("La contraseña debe tener al menos 8 caracteres")
+        return
+      }
+
+      submitButton.setAttribute("disabled", "true")
+      submitButton.textContent = "Actualizando..."
 
       try {
         const res = await fetch("/api/auth/updateUser", {
@@ -159,16 +160,22 @@ if (userInfoCookie) {
         }
 
         alert("Usuario actualizado correctamente")
-        form.reset()
+        formData.forEach((value, key) => {
+          updateUserForm[key].value = value
+        })
       } catch (err) {
         if (err instanceof Error) {
           alert(err.message)
         } else {
           alert("Error desconocido")
         }
+      } finally {
+        submitButton.removeAttribute("disabled")
+        submitButton.textContent = "Actualizar"
+        window.location.reload()
       }
     })
-  }
+  })
 </script>
 
 <style>
