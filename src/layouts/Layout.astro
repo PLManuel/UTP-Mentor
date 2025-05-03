@@ -1,6 +1,7 @@
 ---
 import { ClientRouter } from "astro:transitions"
 import "../styles/global.css"
+import LogoutButton from "../components/LogoutButton.astro"
 
 interface UserInfo {
   nombre?: string
@@ -75,7 +76,7 @@ try {
           <span class="text-gray-600 font-bold"></span>
         </div>
         <div class="truncate max-w-[200px]">
-          <p class="font-medium text-sm">{userEmail}</p>
+          <p class="font-medium text-sm">{userName}</p>
           <p class="text-xs text-gray-500">{userRol}</p>
         </div>
       </div>
@@ -109,7 +110,7 @@ try {
             <span class="text-gray-600 font-bold"></span>
           </div>
           <div class="truncate">
-            <p class="font-medium">{userEmail}</p>
+            <p class="font-medium">{userName}</p>
             <p class="text-xs text-gray-500">{userRol}</p>
           </div>
         </div>
@@ -143,7 +144,7 @@ try {
             userRol === "ADMINISTRADOR" && (
               <li>
                 <a
-                  href=`${basePath}/usuarios`
+                  href={`${basePath}/usuarios`}
                   class="flex items-center font-normal p-2 rounded hover:bg-black hover:text-white hover:font-bold text-gray-700 duration-500 trasition-all ease-in-out"
                 >
                   <svg
@@ -158,12 +159,12 @@ try {
                       stroke-linejoin="round"
                       stroke-width="2"
                       d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                    ></path>
+                    />
                   </svg>
                   <span class="truncate">Usuarios</span>
                 </a>
               </li>
-            )            
+            )
           }
           <li>
             <a
@@ -191,26 +192,7 @@ try {
       </nav>
 
       <div class="p-4 border-t border-gray-300">
-        <button
-          id="logoutBtn"
-          class="w-full bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 flex items-center justify-center"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5 mr-2 flex-shrink-0"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-            ></path>
-          </svg>
-          Cerrar sesión
-        </button>
+        <LogoutButton />
       </div>
 
       <button
@@ -246,55 +228,43 @@ try {
     </main>
 
     <script>
-      const sidebar = document.getElementById("sidebar")
-      const menuToggle = document.getElementById("menuToggle")
-      const closeSidebar = document.getElementById("closeSidebar")
-      const sidebarBackdrop = document.getElementById("sidebarBackdrop")
-      const logoutBtn = document.getElementById("logoutBtn")
+      document.addEventListener("astro:page-load", () => {
+        const sidebar = document.getElementById("sidebar")
+        const menuToggle = document.getElementById("menuToggle")
+        const closeSidebar = document.getElementById("closeSidebar")
+        const sidebarBackdrop = document.getElementById("sidebarBackdrop")
 
-      menuToggle?.addEventListener("click", () => {
-        sidebar?.classList.toggle("-translate-x-full")
-        sidebarBackdrop?.classList.toggle("hidden")
-        document.body.classList.toggle("overflow-hidden")
-      })
+        if (!sidebar || !menuToggle || !closeSidebar || !sidebarBackdrop) {
+          return
+        }
 
-      closeSidebar?.addEventListener("click", () => {
-        sidebar?.classList.add("-translate-x-full")
-        sidebarBackdrop?.classList.add("hidden")
-        document.body.classList.remove("overflow-hidden")
-      })
+        menuToggle?.addEventListener("click", () => {
+          sidebar?.classList.toggle("-translate-x-full")
+          sidebarBackdrop?.classList.toggle("hidden")
+          document.body.classList.toggle("overflow-hidden")
+        })
 
-      sidebarBackdrop?.addEventListener("click", () => {
-        sidebar?.classList.add("-translate-x-full")
-        sidebarBackdrop?.classList.add("hidden")
-        document.body.classList.remove("overflow-hidden")
-      })
-
-      window.addEventListener("resize", () => {
-        if (window.innerWidth >= 1024) {
-          sidebar?.classList.remove("-translate-x-full")
+        closeSidebar?.addEventListener("click", () => {
+          sidebar?.classList.add("-translate-x-full")
           sidebarBackdrop?.classList.add("hidden")
           document.body.classList.remove("overflow-hidden")
-        } else {
+        })
+
+        sidebarBackdrop?.addEventListener("click", () => {
           sidebar?.classList.add("-translate-x-full")
-        }
-      })
+          sidebarBackdrop?.classList.add("hidden")
+          document.body.classList.remove("overflow-hidden")
+        })
 
-      logoutBtn?.addEventListener("click", async () => {
-        try {
-          const res = await fetch("/api/auth/logout", {
-            method: "POST",
-          })
-
-          if (res.ok) {
-            window.location.href = "/login"
+        window.addEventListener("resize", () => {
+          if (window.innerWidth >= 1024) {
+            sidebar?.classList.remove("-translate-x-full")
+            sidebarBackdrop?.classList.add("hidden")
+            document.body.classList.remove("overflow-hidden")
           } else {
-            alert("Error al cerrar sesión")
+            sidebar?.classList.add("-translate-x-full")
           }
-        } catch (err) {
-          console.error("Logout error:", err)
-          alert("Error inesperado al cerrar sesión")
-        }
+        })
       })
     </script>
   </body>
