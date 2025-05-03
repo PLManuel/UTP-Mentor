@@ -33,7 +33,7 @@ import type { MiddlewareHandler } from "astro"
      "/api/auth/registerAdmin",
    ]
  
-   const isPublic = publicRoutes.some((route) => pathname.startsWith(route))
+   const isPublic = publicRoutes.some((route) => pathname.startsWith(route)) || pathname.startsWith("/_")
  
    if (!token && !isPublic) {
      return Response.redirect(new URL("/login", context.url))
