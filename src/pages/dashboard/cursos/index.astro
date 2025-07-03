@@ -1,0 +1,299 @@
+---
+import CourseCreateModal from "../../../components/CourseCreateModal.astro"
+import CourseDeleteButton from "../../../components/CourseDeleteButton.astro"
+import Layout from "../../../layouts/Layout.astro"
+
+const token = Astro.cookies.get("authToken")?.value
+const userInfoCookie = Astro.cookies.get("userInfo")?.value
+
+let currentUser: any = {}
+if (userInfoCookie) {
+  currentUser = JSON.parse(decodeURIComponent(userInfoCookie))
+}
+
+let cursos = []
+let alumnos = []
+let profesores = []
+let error = null
+
+try {
+  if (currentUser.rol === "ADMINISTRADOR") {
+    const responseCursos = await fetch("http://localhost:8080/curso/obtener", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    cursos = await responseCursos.json()
+
+    const responseUsuarios = await fetch(
+      "http://localhost:8080/usuario/obtener",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+    const usuarios = await responseUsuarios.json()
+
+    alumnos = usuarios.filter((u: { roles: string }) => u.roles === "ALUMNO")
+    profesores = usuarios.filter(
+      (u: { roles: string }) => u.roles === "PROFESOR"
+    )
+  } else {
+    console.log(JSON.stringify({ id: currentUser.id }))
+    const response = await fetch(
+      `http://localhost:8080/usuario/obtener/${currentUser.id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+
+    const userData = await response.json()
+    if (currentUser.rol === "PROFESOR") {
+      cursos = userData.cursosDocente || []
+    } else if (currentUser.rol === "ALUMNO") {
+      cursos = userData.cursosEstudiantes || []
+    }
+  }
+} catch (e) {
+  error =
+    "Error al obtener los cursos o usuarios. Por favor, inténtalo de nuevo más tarde."
+  console.error("Error fetching:", e)
+}
+---
+
+<Layout title="Panel de Cursos">
+  <div class="max-w-6xl mx-auto p-6">
+    {
+      currentUser.rol === "ADMINISTRADOR" && (
+        <>
+          <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">
+              Panel de Cursos
+            </h1>
+            <p class="text-gray-600">
+              Aquí puedes gestionar los cursos disponibles.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow-md p-6">
+              <div class="flex items-center">
+                <div class="p-3 rounded-full bg-blue-100 mr-4">
+                  <svg
+                    class="w-6 h-6 text-blue-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-600">Total Cursos</p>
+                  <p class="text-2xl font-bold text-gray-900">
+                    {cursos.length}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6">
+              <div class="flex items-center">
+                <div class="p-3 rounded-full bg-green-100 mr-4">
+                  <svg
+                    class="w-6 h-6 text-green-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-600">Estudiantes</p>
+                  <p class="text-2xl font-bold text-gray-900">
+                    {alumnos.length}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6">
+              <div class="flex items-center">
+                <div class="p-3 rounded-full bg-purple-100 mr-4">
+                  <svg
+                    class="w-6 h-6 text-purple-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-600">Profesores</p>
+                  <p class="text-2xl font-bold text-gray-900">
+                    {profesores.length}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <CourseCreateModal />
+          </div>
+        </>
+      )
+    }
+
+    <div class="bg-white rounded-lg shadow-md">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <h2 class="text-xl font-semibold text-gray-900">Cursos Disponibles</h2>
+      </div>
+
+      {
+        error ? (
+          <div class="p-6">
+            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+              <div class="flex items-center">
+                <svg
+                  class="w-5 h-5 text-red-400 mr-2"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <p class="text-red-800">{error}</p>
+              </div>
+            </div>
+          </div>
+        ) : cursos.length === 0 ? (
+          <div class="p-6 text-center">
+            <svg
+              class="w-12 h-12 text-gray-400 mx-auto mb-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+              />
+            </svg>
+            <p class="text-gray-600 text-lg mb-2">No hay cursos disponibles</p>
+            <p class="text-gray-500">Agrega tu primer curso para comenzar</p>
+          </div>
+        ) : (
+          <div class="divide-y divide-gray-200">
+            {cursos.map((curso: any) => (
+              <div class="p-6 hover:bg-gray-50 transition-colors duration-200">
+                <div class="flex items-center justify-between">
+                  <div class="flex-1">
+                    <div class="flex items-center space-x-3">
+                      <div class="flex-shrink-0">
+                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                          <svg
+                            class="w-6 h-6 text-blue-600"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <h3 class="text-lg font-semibold text-gray-900 truncate">
+                          {curso.nombre}
+                        </h3>
+                        <div class="flex items-center space-x-4 mt-1">
+                          <span class="text-sm text-gray-500">
+                            ID: {curso.id}
+                          </span>
+                          <span class="text-sm text-gray-500">
+                            {curso.usuarios?.length || 0} estudiantes
+                          </span>
+                          {curso.usuarioInteresado && (
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                              Usuario interesado
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="flex items-center space-x-2 ml-4">
+                    <a
+                      href={`cursos/${curso.id}`}
+                      class="text-blue-600 block hover:text-blue-800 p-2 rounded-lg hover:bg-blue-50 transition-colors duration-200"
+                    >
+                      <svg
+                        class="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                        />
+                      </svg>
+                    </a>
+                    {currentUser.rol === "ADMINISTRADOR" && (
+                      <CourseDeleteButton cursoId={curso.id} />
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </div>
+</Layout>

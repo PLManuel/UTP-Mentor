@@ -12,6 +12,9 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+  server: {
+    port: 4324,
+  },
   output: "server",
   adapter: vercel(),
 })

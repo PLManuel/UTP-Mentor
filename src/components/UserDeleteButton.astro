@@ -1,0 +1,47 @@
+---
+interface Props {
+  userId: string
+}
+const { userId } = Astro.props
+---
+
+<button data-id={userId} class="delete-user-btn bg-red-500 block w-fit rounded-md p-1 text-white">
+  Eliminar
+</button>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const deleteButtons = document.querySelectorAll(".delete-user-btn")
+
+    deleteButtons.forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const id = btn.getAttribute("data-id")
+        if (!id) return
+
+        if (!confirm("¿Estás seguro de que deseas eliminar este usuario?")) return
+
+        try {
+          const res = await fetch("/api/user/delete", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ id })
+          })
+
+          const result = await res.json()
+
+          if (!res.ok) {
+            alert(result.error || "Error al eliminar")
+          } else {
+            alert("Usuario eliminado correctamente")
+            location.reload()
+          }
+        } catch (err) {
+          console.error("Error:", err)
+          alert("Error de red o del servidor")
+        }
+      })
+    })
+  })
+</script>

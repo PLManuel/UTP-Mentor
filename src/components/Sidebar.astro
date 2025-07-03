@@ -1,0 +1,265 @@
+---
+import LogoutButton from "./LogoutButton.astro"
+
+interface Props {
+  userId: string
+}
+
+const { userId } = Astro.props
+---
+
+<div id="user-id" data-id={userId} hidden></div>
+
+<div
+  class="lg:hidden fixed top-0 left-0 w-full bg-white z-20 flex items-center justify-between p-4 shadow-md"
+>
+  <div class="flex items-center space-x-3">
+    <div
+      class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center"
+    >
+      <span class="text-gray-600 font-bold"></span>
+    </div>
+    <div class="truncate max-w-[200px]">
+      <p class="font-medium text-sm userName"></p>
+      <p class="text-xs text-gray-500 userRol"></p>
+    </div>
+  </div>
+
+  <button id="menuToggle" class="text-gray-700 focus:outline-none">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6 w-6"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M4 6h16M4 12h16M4 18h16"></path>
+    </svg>
+  </button>
+</div>
+
+<aside
+  id="sidebar"
+  class="fixed inset-y-0 left-0 transform -translate-x-full lg:translate-x-0 z-30 w-64 bg-white shadow-md flex flex-col h-full transition-transform duration-300 ease-in-out"
+>
+  <div class="p-4 border-b border-gray-300">
+    <div class="flex items-center space-x-3">
+      <div
+        class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center"
+      >
+        <span class="text-gray-600 font-bold"></span>
+      </div>
+      <div class="truncate">
+        <p class="font-medium userName"></p>
+        <p class="text-xs text-gray-500 userRol"></p>
+      </div>
+    </div>
+  </div>
+
+  <nav class="flex-1 p-4 overflow-y-auto">
+    <ul class="space-y-2">
+      <li>
+        <a
+          data-path=""
+          class="menu-link flex items-center font-normal p-2 rounded hover:bg-black hover:text-white hover:font-bold text-gray-700 transition"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 mr-3 flex-shrink-0"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+            ></path>
+          </svg>
+          <span class="truncate">Inicio</span>
+        </a>
+      </li>
+      <li data-role="ADMINISTRADOR" class="hidden">
+        <a
+          data-path="usuarios"
+          class="menu-link flex items-center font-normal p-2 rounded hover:bg-black hover:text-white hover:font-bold text-gray-700 transition"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 mr-3 flex-shrink-0"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+            ></path>
+          </svg>
+          <span class="truncate">Usuarios</span>
+        </a>
+      </li>
+      <li data-role="ADMINISTRADOR PROFESOR ALUMNO" class="hidden">
+        <a
+          data-path="cursos"
+          class="menu-link flex items-center font-normal p-2 rounded hover:bg-black hover:text-white hover:font-bold text-gray-700 transition"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 mr-3 flex-shrink-0"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+            ></path>
+          </svg>
+          <span class="truncate">Cursos</span>
+        </a>
+      </li>
+      <li>
+        <a
+          data-path="perfil"
+          class="menu-link flex items-center font-normal p-2 rounded hover:bg-black hover:text-white hover:font-bold text-gray-700 transition"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 mr-3 flex-shrink-0"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+            ></path>
+          </svg>
+          <span class="truncate">Perfil</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="p-4 border-t border-gray-300">
+    <LogoutButton />
+  </div>
+
+  <button
+    id="closeSidebar"
+    class="lg:hidden absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6 w-6"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M6 18L18 6M6 6l12 12"></path>
+    </svg>
+  </button>
+</aside>
+
+<div
+  id="sidebarBackdrop"
+  class="fixed inset-0 bg-transparent bg-opacity-50 z-20 hidden lg:hidden"
+>
+</div>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const sidebar = document.getElementById("sidebar")
+    const menuToggle = document.getElementById("menuToggle")
+    const closeSidebar = document.getElementById("closeSidebar")
+    const sidebarBackdrop = document.getElementById("sidebarBackdrop")
+
+    const userId = document.getElementById("user-id")?.dataset.id
+    if (!userId) return
+
+    fetchUserInfo(userId)
+
+    async function fetchUserInfo(userId: string) {
+      try {
+        const res = await fetch("/api/user/getById", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: userId }),
+        })
+        const user = await res.json()
+        const rol = user.roles
+
+        const basePath = rol === "ALUMNO" ? "/resources" : "/dashboard"
+
+        document.querySelectorAll(".userName").forEach((el) => {
+          el.textContent = user.nombres || user.username
+        })
+        document.querySelectorAll(".userRol").forEach((el) => {
+          el.textContent = rol
+        })
+
+        // Mostrar ítems según rol
+        document.querySelectorAll("[data-role]").forEach((el) => {
+          const rolesPermitidos = (el as HTMLElement).dataset.role!.split(" ")
+          if (rolesPermitidos.includes(rol)) {
+            el.classList.remove("hidden")
+          }
+        })
+
+        // Actualizar hrefs con basePath
+        document.querySelectorAll("a[data-path]").forEach((el) => {
+          const path = (el as HTMLElement).dataset.path
+          el.setAttribute("href", `${basePath}/${path}`.replace(/\/+$/, ""))
+        })
+      } catch (error) {
+        console.error("Error fetching user info:", error)
+      }
+    }
+
+    if (!sidebar || !menuToggle || !closeSidebar || !sidebarBackdrop) return
+
+    menuToggle.addEventListener("click", () => {
+      sidebar.classList.toggle("-translate-x-full")
+      sidebarBackdrop.classList.toggle("hidden")
+      document.body.classList.toggle("overflow-hidden")
+    })
+
+    closeSidebar.addEventListener("click", () => {
+      sidebar.classList.add("-translate-x-full")
+      sidebarBackdrop.classList.add("hidden")
+      document.body.classList.remove("overflow-hidden")
+    })
+
+    sidebarBackdrop.addEventListener("click", () => {
+      sidebar.classList.add("-translate-x-full")
+      sidebarBackdrop.classList.add("hidden")
+      document.body.classList.remove("overflow-hidden")
+    })
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth >= 1024) {
+        sidebar.classList.remove("-translate-x-full")
+        sidebarBackdrop.classList.add("hidden")
+        document.body.classList.remove("overflow-hidden")
+      } else {
+        sidebar.classList.add("-translate-x-full")
+      }
+    })
+  })
+</script>
