@@ -11,109 +11,161 @@ const { userId, isAdminUser = false } = Astro.props
   data-id={userId}
   data-admin={isAdminUser}
   id={`openEditProfileBtn-${userId}`}
-  class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md w-fit"
+  class="inline-flex w-fit items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-md shadow transition duration-200"
 >
+  <svg
+    class="w-4 h-4"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    viewBox="0 0 24 24"
+  >
+    <path
+      d="M15.232 5.232l3.536 3.536M9 11l6-6m2 2L7 17H4v-3L15 6z"
+      stroke-linecap="round"
+      stroke-linejoin="round"></path>
+  </svg>
   Editar
 </button>
 
 <dialog
   id={`editProfileModal-${userId}`}
-  class="m-auto p-6 rounded-lg shadow-xl bg-white border border-gray-200 backdrop:bg-black/50 w-full max-w-lg"
+  class="m-auto p-0 w-full max-w-lg rounded-lg shadow-2xl border border-gray-200 backdrop:bg-black/50 bg-white"
 >
-  <form id={`editProfileForm-${userId}`} method="dialog" class="space-y-4">
+  <form id={`editProfileForm-${userId}`} method="dialog" class="p-6 space-y-6">
+    <div class="flex items-center justify-between border-b pb-4">
+      <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+        <svg
+          class="w-5 h-5 text-blue-600"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M5 13l4 4L19 7"></path>
+        </svg>
+        Editar perfil
+      </h2>
+      <button
+        type="button"
+        onclick={`document.getElementById('editProfileModal-${userId}').close()`}
+        class="text-gray-400 hover:text-gray-600 focus:outline-none"
+      >
+        <svg
+          class="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
     <input type="hidden" name="id" id={`edit-id-${userId}`} />
 
-    <!-- Nombre -->
-    <div class="space-y-2">
-      <label
-        for={`edit-nombre-${userId}`}
-        class="block text-sm font-medium text-gray-700">Nombre:</label
-      >
-      <input
-        type="text"
-        name="nombre"
-        id={`edit-nombre-${userId}`}
-        class="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <label
+          for={`edit-nombre-${userId}`}
+          class="block text-sm font-medium text-gray-700">Nombre</label
+        >
+        <input
+          type="text"
+          name="nombre"
+          id={`edit-nombre-${userId}`}
+          class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm"
+        />
+      </div>
+      <div>
+        <label
+          for={`edit-apellido-${userId}`}
+          class="block text-sm font-medium text-gray-700">Apellido</label
+        >
+        <input
+          type="text"
+          name="apellido"
+          id={`edit-apellido-${userId}`}
+          class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm"
+        />
+      </div>
     </div>
 
-    <!-- Apellido -->
-    <div class="space-y-2">
-      <label
-        for={`edit-apellido-${userId}`}
-        class="block text-sm font-medium text-gray-700">Apellido:</label
-      >
-      <input
-        type="text"
-        name="apellido"
-        id={`edit-apellido-${userId}`}
-        class="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-    </div>
-
-    <!-- DNI -->
-    <div class="space-y-2">
+    <div>
       <label
         for={`edit-dni-${userId}`}
-        class="block text-sm font-medium text-gray-700">DNI:</label
+        class="block text-sm font-medium text-gray-700">DNI</label
       >
       <input
         type="text"
         name="dni"
         id={`edit-dni-${userId}`}
-        class="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm"
       />
     </div>
-
-    <!-- Correo -->
-    <div class="space-y-2">
+    <div>
       <label
         for={`edit-correo-${userId}`}
-        class="block text-sm font-medium text-gray-700">Correo:</label
+        class="block text-sm font-medium text-gray-700">Correo</label
       >
       <input
         type="email"
         name="correo"
         id={`edit-correo-${userId}`}
-        class="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm"
       />
     </div>
-
-    <!-- Rol (solo visible si es administrador) -->
     {
       isAdminUser && (
-        <div class="space-y-2">
+        <div>
           <label
             for={`edit-rol-${userId}`}
             class="block text-sm font-medium text-gray-700"
           >
-            Rol:
+            Rol
           </label>
           <select
             name="rol"
             id={`edit-rol-${userId}`}
-            class="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+            class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm bg-white"
           >
-            <option value="ADMINISTRADOR">ADMINISTRADOR</option>
-            <option value="PROFESOR">PROFESOR</option>
-            <option value="ALUMNO">ALUMNO</option>
+            <option value="ADMINISTRADOR">Administrador</option>
+            <option value="PROFESOR">Profesor</option>
+            <option value="ALUMNO">Alumno</option>
           </select>
         </div>
       )
     }
 
-    <div
-      class="grid grid-cols-1 sm:grid-cols-2 gap-4"
-      id={`cursos-container-${userId}`}
-    >
-    </div>
+    <div class="space-y-2" id={`cursos-container-${userId}`}></div>
 
-    <button
-      type="submit"
-      class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-    >
-      Guardar
-    </button>
+    <div class="pt-4 border-t">
+      <button
+        type="submit"
+        class="inline-flex items-center gap-2 w-full justify-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+      >
+        <svg
+          class="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M5 13l4 4L19 7"></path>
+        </svg>
+        Guardar cambios
+      </button>
+    </div>
   </form>
 </dialog>
 
@@ -122,7 +174,7 @@ const { userId, isAdminUser = false } = Astro.props
     const buttons = document.querySelectorAll(
       "button[id^='openEditProfileBtn-']"
     )
-    let allCourses = []
+    let allCourses: any = []
 
     try {
       const res = await fetch("/api/courses/getAll")
@@ -132,14 +184,18 @@ const { userId, isAdminUser = false } = Astro.props
     }
 
     buttons.forEach((btn) => {
-      const userId = btn.dataset.id
-      const isAdminUser = btn.dataset.admin === "true"
-      const modal = document.getElementById(`editProfileModal-${userId}`)
-      const form = document.getElementById(`editProfileForm-${userId}`)
+      const userId = (btn as HTMLElement).dataset.id
+      const isAdminUser = (btn as HTMLElement).dataset.admin === "true"
+      const modal = document.getElementById(
+        `editProfileModal-${userId}`
+      ) as HTMLDialogElement
+      const form = document.getElementById(
+        `editProfileForm-${userId}`
+      ) as HTMLFormElement
       const cursosContainer = document.getElementById(
         `cursos-container-${userId}`
-      )
-      let originalUserData = {}
+      ) as HTMLDivElement
+      let originalUserData: any = {}
 
       btn.addEventListener("click", async () => {
         try {
@@ -157,8 +213,10 @@ const { userId, isAdminUser = false } = Astro.props
             dni: user.dni || "",
             correo: user.email || "",
             rol: (user.roles || "").toUpperCase(),
-            cursosDocente: (user.cursosDocente || []).map((c) => String(c.id)),
-            cursosEstudiantes: (user.cursosEstudiantes || []).map((c) =>
+            cursosDocente: (user.cursosDocente || []).map((c: any) =>
+              String(c.id)
+            ),
+            cursosEstudiantes: (user.cursosEstudiantes || []).map((c: any) =>
               String(c.id)
             ),
           }
@@ -167,7 +225,10 @@ const { userId, isAdminUser = false } = Astro.props
 
           Object.entries(data).forEach(([key, val]) => {
             const el = form?.querySelector(`[name="${key}"]`)
-            if (el) el.value = val
+            if (el && "value" in el)
+              (
+                el as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+              ).value = val
           })
 
           if (isAdminUser && data.rol !== "ADMINISTRADOR") {
@@ -186,7 +247,7 @@ const { userId, isAdminUser = false } = Astro.props
         }
       })
 
-      form.addEventListener("submit", async (e) => {
+      form?.addEventListener("submit", async (e) => {
         e.preventDefault()
         const formData = Object.fromEntries(new FormData(form).entries())
 
@@ -200,7 +261,7 @@ const { userId, isAdminUser = false } = Astro.props
           formData.rol = originalUserData.rol
         }
 
-        const modifiedData = {}
+        const modifiedData: any = {}
         for (const key of [
           "id",
           "nombre",
@@ -217,7 +278,7 @@ const { userId, isAdminUser = false } = Astro.props
         if (isAdminUser && formData.rol !== "ADMINISTRADOR") {
           const selected = Array.from(
             form.querySelectorAll("input[name='cursos']:checked")
-          ).map((el) => el.value)
+          ).map((el) => (el as HTMLInputElement).value)
           const original =
             formData.rol === "PROFESOR"
               ? originalUserData.cursosDocente
@@ -264,7 +325,11 @@ const { userId, isAdminUser = false } = Astro.props
         if (e.target === modal) modal.close()
       })
 
-      function renderCursosInputs(rol, cursosDocente, cursosEstudiantes) {
+      function renderCursosInputs(
+        rol: string,
+        cursosDocente: any,
+        cursosEstudiantes: any
+      ) {
         cursosContainer.innerHTML = ""
         const selectedIds =
           rol === "PROFESOR" ? cursosDocente : cursosEstudiantes
@@ -272,7 +337,7 @@ const { userId, isAdminUser = false } = Astro.props
         cursosContainer.innerHTML += `
           <label class="block text-sm font-medium text-gray-700 col-span-2"> Cursos: </label>
         `
-        allCourses.forEach(({ id, nombre }) => {
+        allCourses.forEach(({ id, nombre }: { id: string; nombre: string }) => {
           const isChecked = selectedIds.includes(String(id))
           cursosContainer.innerHTML += `
             <div>

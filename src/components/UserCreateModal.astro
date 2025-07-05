@@ -152,6 +152,7 @@
             <option value="">Seleccione un rol</option>
             <option value="ADMINISTRADOR">Administrador</option>
             <option value="PROFESOR">Profesor</option>
+            <option value="ALUMNO">Alumno</option>
           </select>
         </div>
 
@@ -237,18 +238,25 @@
       loadingIcon?.classList.remove("hidden")
 
       const formData = new FormData(userForm)
+      const rolSeleccionado = formData.get("roles")
 
-      const payload = {
+      // Cuerpo base sin el rol
+      const payloadBase = {
         nombre: formData.get("nombres"),
         apellido: formData.get("apellidos"),
         dni: formData.get("dni"),
         correo: formData.get("email"),
         contraseña: formData.get("contraseña"),
-        rol: formData.get("roles"),
       }
 
+      const isAlumno = rolSeleccionado === "ALUMNO"
+      const url = isAlumno ? "/api/user/registerStudent" : "/api/user/register"
+      const payload = isAlumno
+        ? payloadBase
+        : { ...payloadBase, rol: rolSeleccionado }
+
       try {
-        const res = await fetch("/api/user/register", {
+        const res = await fetch(url, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

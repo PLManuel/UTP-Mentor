@@ -1,5 +1,4 @@
 ---
-import ResourceCreateModal from "../../../components/ResourceCreateModal.astro"
 import Layout from "../../../layouts/Layout.astro"
 
 const userInfoCookie = Astro.cookies.get("userInfo")?.value
@@ -13,8 +12,6 @@ const token = Astro.cookies.get("authToken")?.value
 
 let curso = null
 
-console.log(`http://localhost:8080/curso/obtener/${id}`)
-
 try {
   const response = await fetch(`http://localhost:8080/curso/obtener/${id}`, {
     method: "GET",
@@ -26,21 +23,7 @@ try {
 
   if (response.ok) {
     curso = await response.json()
-    console.log("Curso obtenido:", curso)
-//     Curso obtenido: {
-//   id: 2,
-//   nombre: 'Daniel',
-//   recursos: [
-//     {
-//       id: 1,
-//       titulo: 'Prueba001',
-//       descripcion: 'qweqweqeqweqwe',
-//       'ubicación': 'el-kloset-de-sole-Pica.png',
-//       'fechaCreación': '2025-07-02T21:12:48.477+00:00',
-//       actividades: [Array]
-//     }
-//   ]
-// }
+    console.log("Recursos obtenido:", curso.recursos)
   } else {
     console.error("Error al obtener el curso")
   }
@@ -54,7 +37,6 @@ try {
     <h2 class="text-2xl font-semibold text-gray-800">
       Material del curso: {curso?.nombre}
     </h2>
-    <ResourceCreateModal idCurso={id} idUsuario={userInfo.id} />
   </div>
 
   <div class="space-y-4">
@@ -93,7 +75,14 @@ try {
 </Layout>
 
 <script>
-  window.descargarArchivo = async function (nombreArchivo:string) {
+  declare global {
+    interface Window {
+      descargarArchivo: (nombreArchivo: string) => Promise<void>
+      eliminarArchivo: (idArchivo: string) => Promise<void>
+    }
+  }
+
+  window.descargarArchivo = async function (nombreArchivo: string) {
     try {
       const response = await fetch("/api/resources/download", {
         method: "POST",

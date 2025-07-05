@@ -5,69 +5,52 @@ import Layout from "../../../layouts/Layout.astro"
 
 const token = Astro.cookies.get("authToken")?.value
 const userInfoCookie = Astro.cookies.get("userInfo")?.value
+const API_BASE = "http://localhost:8080"
 
 let currentUser: any = {}
-if (userInfoCookie) {
-  currentUser = JSON.parse(decodeURIComponent(userInfoCookie))
-}
-
 let cursos = []
+let usuarios = []
 let alumnos = []
 let profesores = []
 let error = null
 
+if (userInfoCookie) {
+  currentUser = JSON.parse(decodeURIComponent(userInfoCookie))
+}
+
+async function fetchWithToken(endpoint: string) {
+  const res = await fetch(`${API_BASE}${endpoint}`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  if (!res.ok) throw new Error(`Error al obtener ${endpoint}`)
+  return res.json()
+}
+
 try {
   if (currentUser.rol === "ADMINISTRADOR") {
-    const responseCursos = await fetch("http://localhost:8080/curso/obtener", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    cursos = await responseCursos.json()
+    ;[cursos, usuarios] = await Promise.all([
+      fetchWithToken("/curso/obtener"),
+      fetchWithToken("/usuario/obtener"),
+    ])
 
-    const responseUsuarios = await fetch(
-      "http://localhost:8080/usuario/obtener",
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    )
-    const usuarios = await responseUsuarios.json()
-
-    alumnos = usuarios.filter((u: { roles: string }) => u.roles === "ALUMNO")
-    profesores = usuarios.filter(
-      (u: { roles: string }) => u.roles === "PROFESOR"
-    )
+    alumnos = usuarios.filter((u: any) => u.roles === "ALUMNO")
+    profesores = usuarios.filter((u: any) => u.roles === "PROFESOR")
   } else {
-    console.log(JSON.stringify({ id: currentUser.id }))
-    const response = await fetch(
-      `http://localhost:8080/usuario/obtener/${currentUser.id}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    )
-
-    const userData = await response.json()
-    if (currentUser.rol === "PROFESOR") {
-      cursos = userData.cursosDocente || []
-    } else if (currentUser.rol === "ALUMNO") {
-      cursos = userData.cursosEstudiantes || []
-    }
+    const userData = await fetchWithToken(`/usuario/obtener/${currentUser.id}`)
+    cursos =
+      currentUser.rol === "PROFESOR"
+        ? userData.cursosDocente || []
+        : userData.cursosEstudiantes || []
   }
 } catch (e) {
-  error =
-    "Error al obtener los cursos o usuarios. Por favor, inténtalo de nuevo más tarde."
-  console.error("Error fetching:", e)
+  console.error("Error:", e)
+  error = "No se pudieron cargar los datos. Inténtalo más tarde."
 }
+
+console.log("Cursos:", cursos)
 ---
 
 <Layout title="Panel de Cursos">
@@ -172,10 +155,17 @@ try {
     }
 
     <div class="bg-white rounded-lg shadow-md">
-      <div class="px-6 py-4 border-b border-gray-200">
+      <div
+        class="flex justify-between items-center px-6 py-4 border-b border-gray-200"
+      >
         <h2 class="text-xl font-semibold text-gray-900">Cursos Disponibles</h2>
+        <input
+          id="searchInput"
+          type="text"
+          placeholder="Buscar curso..."
+          class="px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+        />
       </div>
-
       {
         error ? (
           <div class="p-6">
@@ -217,7 +207,7 @@ try {
         ) : (
           <div class="divide-y divide-gray-200">
             {cursos.map((curso: any) => (
-              <div class="p-6 hover:bg-gray-50 transition-colors duration-200">
+              <div class="curso-row p-6 hover:bg-gray-50 transition-colors duration-200">
                 <div class="flex items-center justify-between">
                   <div class="flex-1">
                     <div class="flex items-center space-x-3">
@@ -246,14 +236,6 @@ try {
                           <span class="text-sm text-gray-500">
                             ID: {curso.id}
                           </span>
-                          <span class="text-sm text-gray-500">
-                            {curso.usuarios?.length || 0} estudiantes
-                          </span>
-                          {curso.usuarioInteresado && (
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                              Usuario interesado
-                            </span>
-                          )}
                         </div>
                       </div>
                     </div>
@@ -291,9 +273,42 @@ try {
                 </div>
               </div>
             ))}
+            <div
+              id="no-cursos-msg"
+              class="p-6 text-center text-gray-500"
+              style="display: none;"
+            >
+              No se encontraron cursos que coincidan con la búsqueda.
+            </div>
           </div>
         )
       }
     </div>
   </div>
+  <script>
+    document.addEventListener("astro:page-load", () => {
+      const input = document.getElementById("searchInput") as HTMLInputElement
+      const rows = document.querySelectorAll(
+        ".curso-row"
+      ) as NodeListOf<HTMLDivElement>
+
+      input.addEventListener("input", () => {
+        const search = input.value.toLowerCase()
+
+        let anyVisible = false
+        rows.forEach((row) => {
+          const text = row.textContent?.toLowerCase()
+          const match = text?.includes(search)
+          row.style.display = match ? "" : "none"
+          if (match) anyVisible = true
+        })
+
+        const emptyMsg = document.getElementById("no-cursos-msg")
+        if (emptyMsg) {
+          emptyMsg.style.display = anyVisible ? "none" : ""
+          emptyMsg.style.display = anyVisible ? "none" : ""
+        }
+      })
+    })
+  </script>
 </Layout>
