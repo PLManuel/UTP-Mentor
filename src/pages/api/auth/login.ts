@@ -44,11 +44,13 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       "userInfo",
       encodeURIComponent(
         JSON.stringify({
+          id: responseData.id,
           nombre: responseData.nombre,
           apellido: responseData.apellido,
-          correo: responseData.correo,
           dni: responseData.dni,
+          correo: responseData.correo,
           rol: responseData.rol,
+          cursos: responseData.cursos,
         })
       ),
       {
@@ -60,9 +62,9 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       }
     )
 
-    let redirectTo = "/resources"
-    if (responseData.rol === "ADMINISTRADOR") {
-      redirectTo = "/dashboard"
+    let redirectTo = "/dashboard"
+    if (responseData.rol === "ALUMNO") {
+      redirectTo = "/resources"
     }
 
     return new Response(JSON.stringify({ redirectTo }), {

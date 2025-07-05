@@ -1,0 +1,125 @@
+---
+import Layout from "../../../layouts/Layout.astro"
+
+const userInfoCookie = Astro.cookies.get("userInfo")?.value
+let userInfo
+if (userInfoCookie) {
+  userInfo = JSON.parse(decodeURIComponent(userInfoCookie))
+}
+
+const { id } = Astro.params
+const token = Astro.cookies.get("authToken")?.value
+
+let curso = null
+
+try {
+  const response = await fetch(`http://localhost:8080/curso/obtener/${id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  if (response.ok) {
+    curso = await response.json()
+    console.log("Recursos obtenido:", curso.recursos)
+  } else {
+    console.error("Error al obtener el curso")
+  }
+} catch (error) {
+  console.error("Error en la solicitud:", error)
+}
+---
+
+<Layout title={curso?.nombre}>
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-semibold text-gray-800">
+      Material del curso: {curso?.nombre}
+    </h2>
+  </div>
+
+  <div class="space-y-4">
+    {
+      curso?.recursos?.length > 0 ? (
+        curso.recursos.map(
+          (recurso: {
+            titulo: string
+            descripcion: string
+            fechaCreación: string
+            ubicación: string
+          }) => (
+            <div class="border bg-white border-gray-200 rounded-md p-4 shadow-sm">
+              <h3 class="text-lg font-semibold text-gray-900">
+                {recurso.titulo}
+              </h3>
+              <p class="text-gray-700 text-sm mb-2">{recurso.descripcion}</p>
+              <p class="text-gray-500 text-xs mb-3">
+                Fecha de creación:{" "}
+                {new Date(recurso.fechaCreación).toLocaleDateString()}
+              </p>
+              <button
+                onclick={`descargarArchivo('${recurso.ubicación}')`}
+                class="text-blue-600 hover:underline text-sm"
+              >
+                Ver recurso
+              </button>
+            </div>
+          )
+        )
+      ) : (
+        <p class="text-gray-500 text-sm">No hay recursos registrados.</p>
+      )
+    }
+  </div>
+</Layout>
+
+<script>
+  declare global {
+    interface Window {
+      descargarArchivo: (nombreArchivo: string) => Promise<void>
+      eliminarArchivo: (idArchivo: string) => Promise<void>
+    }
+  }
+
+  window.descargarArchivo = async function (nombreArchivo: string) {
+    try {
+      const response = await fetch("/api/resources/download", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: nombreArchivo }),
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        alert(error.error || "Error al descargar")
+        return
+      }
+
+      const blob = await response.blob()
+      const contentDisposition = response.headers.get("content-disposition")
+      let filename = nombreArchivo
+
+      if (contentDisposition && contentDisposition.includes("filename=")) {
+        const match = contentDisposition.match(/filename="?(.+?)"?$/)
+        if (match?.[1]) {
+          filename = match[1]
+        }
+      }
+
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = filename
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      window.URL.revokeObjectURL(url)
+    } catch (error) {
+      console.error("Error al descargar el archivo:", error)
+      alert("Error al descargar el archivo.")
+    }
+  }
+</script>

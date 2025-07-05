@@ -1,0 +1,352 @@
+---
+interface Props {
+  userId: string
+  isAdminUser?: boolean
+}
+
+const { userId, isAdminUser = false } = Astro.props
+---
+
+<button
+  data-id={userId}
+  data-admin={isAdminUser}
+  id={`openEditProfileBtn-${userId}`}
+  class="inline-flex w-fit items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-md shadow transition duration-200"
+>
+  <svg
+    class="w-4 h-4"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    viewBox="0 0 24 24"
+  >
+    <path
+      d="M15.232 5.232l3.536 3.536M9 11l6-6m2 2L7 17H4v-3L15 6z"
+      stroke-linecap="round"
+      stroke-linejoin="round"></path>
+  </svg>
+  Editar
+</button>
+
+<dialog
+  id={`editProfileModal-${userId}`}
+  class="m-auto p-0 w-full max-w-lg rounded-lg shadow-2xl border border-gray-200 backdrop:bg-black/50 bg-white"
+>
+  <form id={`editProfileForm-${userId}`} method="dialog" class="p-6 space-y-6">
+    <div class="flex items-center justify-between border-b pb-4">
+      <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+        <svg
+          class="w-5 h-5 text-blue-600"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M5 13l4 4L19 7"></path>
+        </svg>
+        Editar perfil
+      </h2>
+      <button
+        type="button"
+        onclick={`document.getElementById('editProfileModal-${userId}').close()`}
+        class="text-gray-400 hover:text-gray-600 focus:outline-none"
+      >
+        <svg
+          class="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <input type="hidden" name="id" id={`edit-id-${userId}`} />
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <label
+          for={`edit-nombre-${userId}`}
+          class="block text-sm font-medium text-gray-700">Nombre</label
+        >
+        <input
+          type="text"
+          name="nombre"
+          id={`edit-nombre-${userId}`}
+          class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm"
+        />
+      </div>
+      <div>
+        <label
+          for={`edit-apellido-${userId}`}
+          class="block text-sm font-medium text-gray-700">Apellido</label
+        >
+        <input
+          type="text"
+          name="apellido"
+          id={`edit-apellido-${userId}`}
+          class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm"
+        />
+      </div>
+    </div>
+
+    <div>
+      <label
+        for={`edit-dni-${userId}`}
+        class="block text-sm font-medium text-gray-700">DNI</label
+      >
+      <input
+        type="text"
+        name="dni"
+        id={`edit-dni-${userId}`}
+        class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm"
+      />
+    </div>
+    <div>
+      <label
+        for={`edit-correo-${userId}`}
+        class="block text-sm font-medium text-gray-700">Correo</label
+      >
+      <input
+        type="email"
+        name="correo"
+        id={`edit-correo-${userId}`}
+        class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm"
+      />
+    </div>
+    {
+      isAdminUser && (
+        <div>
+          <label
+            for={`edit-rol-${userId}`}
+            class="block text-sm font-medium text-gray-700"
+          >
+            Rol
+          </label>
+          <select
+            name="rol"
+            id={`edit-rol-${userId}`}
+            class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm bg-white"
+          >
+            <option value="ADMINISTRADOR">Administrador</option>
+            <option value="PROFESOR">Profesor</option>
+            <option value="ALUMNO">Alumno</option>
+          </select>
+        </div>
+      )
+    }
+
+    <div class="space-y-2" id={`cursos-container-${userId}`}></div>
+
+    <div class="pt-4 border-t">
+      <button
+        type="submit"
+        class="inline-flex items-center gap-2 w-full justify-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+      >
+        <svg
+          class="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M5 13l4 4L19 7"></path>
+        </svg>
+        Guardar cambios
+      </button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+  document.addEventListener("astro:page-load", async () => {
+    const buttons = document.querySelectorAll(
+      "button[id^='openEditProfileBtn-']"
+    )
+    let allCourses: any = []
+
+    try {
+      const res = await fetch("/api/courses/getAll")
+      allCourses = await res.json()
+    } catch (err) {
+      console.error("Error al obtener cursos:", err)
+    }
+
+    buttons.forEach((btn) => {
+      const userId = (btn as HTMLElement).dataset.id
+      const isAdminUser = (btn as HTMLElement).dataset.admin === "true"
+      const modal = document.getElementById(
+        `editProfileModal-${userId}`
+      ) as HTMLDialogElement
+      const form = document.getElementById(
+        `editProfileForm-${userId}`
+      ) as HTMLFormElement
+      const cursosContainer = document.getElementById(
+        `cursos-container-${userId}`
+      ) as HTMLDivElement
+      let originalUserData: any = {}
+
+      btn.addEventListener("click", async () => {
+        try {
+          const res = await fetch("/api/user/getById", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: userId }),
+          })
+          const user = await res.json()
+
+          const data = {
+            id: user.id,
+            nombre: user.nombres || user.username || "",
+            apellido: user.apellidos || "",
+            dni: user.dni || "",
+            correo: user.email || "",
+            rol: (user.roles || "").toUpperCase(),
+            cursosDocente: (user.cursosDocente || []).map((c: any) =>
+              String(c.id)
+            ),
+            cursosEstudiantes: (user.cursosEstudiantes || []).map((c: any) =>
+              String(c.id)
+            ),
+          }
+
+          originalUserData = { ...data }
+
+          Object.entries(data).forEach(([key, val]) => {
+            const el = form?.querySelector(`[name="${key}"]`)
+            if (el && "value" in el)
+              (
+                el as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+              ).value = val
+          })
+
+          if (isAdminUser && data.rol !== "ADMINISTRADOR") {
+            renderCursosInputs(
+              data.rol,
+              data.cursosDocente,
+              data.cursosEstudiantes
+            )
+          } else {
+            cursosContainer.innerHTML = ""
+          }
+
+          modal.showModal()
+        } catch (err) {
+          console.error("Error al abrir modal:", err)
+        }
+      })
+
+      form?.addEventListener("submit", async (e) => {
+        e.preventDefault()
+        const formData = Object.fromEntries(new FormData(form).entries())
+
+        if (isAdminUser) {
+          formData.rol = (
+            typeof formData.rol === "string" ? formData.rol : ""
+          ).toUpperCase()
+          const validRoles = ["ADMINISTRADOR", "PROFESOR", "ALUMNO"]
+          if (!validRoles.includes(formData.rol)) return alert("Rol inválido.")
+        } else {
+          formData.rol = originalUserData.rol
+        }
+
+        const modifiedData: any = {}
+        for (const key of [
+          "id",
+          "nombre",
+          "apellido",
+          "dni",
+          "correo",
+          "rol",
+        ]) {
+          if (formData[key] !== originalUserData[key]) {
+            modifiedData[key] = formData[key]
+          }
+        }
+
+        if (isAdminUser && formData.rol !== "ADMINISTRADOR") {
+          const selected = Array.from(
+            form.querySelectorAll("input[name='cursos']:checked")
+          ).map((el) => (el as HTMLInputElement).value)
+          const original =
+            formData.rol === "PROFESOR"
+              ? originalUserData.cursosDocente
+              : originalUserData.cursosEstudiantes
+
+          if (
+            JSON.stringify([...selected].sort()) !==
+            JSON.stringify([...original].sort())
+          ) {
+            modifiedData[
+              formData.rol === "PROFESOR"
+                ? "cursosProfesor"
+                : "cursosEstudiante"
+            ] = selected.map((id) => ({ id }))
+          }
+        }
+
+        if (Object.keys(modifiedData).length === 0) {
+          alert("No hay cambios para guardar.")
+          modal.close()
+          return
+        }
+
+        try {
+          console.log("Datos a enviar:", JSON.stringify(modifiedData))
+          const res = await fetch("/api/user/update", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(modifiedData),
+          })
+
+          if (!res.ok) throw new Error(`Error ${res.status}`)
+
+          alert("Cambios guardados correctamente.")
+          modal.close()
+          window.location.reload()
+        } catch (err) {
+          console.error("Error al guardar cambios:", err)
+          alert("Error al guardar los cambios.")
+        }
+      })
+
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) modal.close()
+      })
+
+      function renderCursosInputs(
+        rol: string,
+        cursosDocente: any,
+        cursosEstudiantes: any
+      ) {
+        cursosContainer.innerHTML = ""
+        const selectedIds =
+          rol === "PROFESOR" ? cursosDocente : cursosEstudiantes
+
+        cursosContainer.innerHTML += `
+          <label class="block text-sm font-medium text-gray-700 col-span-2"> Cursos: </label>
+        `
+        allCourses.forEach(({ id, nombre }: { id: string; nombre: string }) => {
+          const isChecked = selectedIds.includes(String(id))
+          cursosContainer.innerHTML += `
+            <div>
+              <input type="checkbox" name="cursos" id="curso-${id}-${userId}" value="${id}" ${isChecked ? "checked" : ""} />
+              <label for="curso-${id}-${userId}">${nombre}</label>
+            </div>
+          `
+        })
+      }
+    })
+  })
+</script>
