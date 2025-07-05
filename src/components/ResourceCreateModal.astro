@@ -1,0 +1,507 @@
+---
+const { idCurso, idUsuario } = Astro.props
+---
+
+<div>
+  <button
+    id="openResourceModalBtn"
+    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center space-x-2"
+  >
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+      ></path>
+    </svg>
+    <span>Subir Recurso</span>
+  </button>
+
+  <dialog
+    id="resourceModal"
+    class="rounded-lg shadow-xl max-w-lg w-full mx-auto p-0 backdrop:bg-black backdrop:bg-opacity-50"
+  >
+    <div class="bg-white rounded-lg w-full">
+      <div
+        class="flex items-center justify-between p-6 border-b border-gray-200"
+      >
+        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+          <svg
+            class="w-6 h-6 text-green-600 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+            ></path>
+          </svg>
+          Subir Nuevo Recurso
+        </h3>
+        <button
+          id="closeResourceModalBtn"
+          class="text-gray-400 hover:text-gray-600 transition-colors duration-200"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <form
+        id="resourceForm"
+        data-curso={idCurso}
+        data-usuario={idUsuario}
+        class="p-6"
+      >
+        <div class="space-y-4">
+          <div>
+            <label
+              for="titulo"
+              class="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Título del recurso
+            </label>
+            <input
+              type="text"
+              id="titulo"
+              name="titulo"
+              required
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              placeholder="Ingresa el título del recurso"
+            />
+          </div>
+          <div>
+            <label
+              for="descripcion"
+              class="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Descripción
+            </label>
+            <textarea
+              id="descripcion"
+              name="descripcion"
+              required
+              rows="3"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none"
+              placeholder="Describe el contenido del recurso"></textarea>
+          </div>
+          <div>
+            <label
+              for="file"
+              class="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Archivo
+            </label>
+            <div class="relative">
+              <input
+                type="file"
+                id="file"
+                name="file"
+                accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                required
+                class="hidden"
+              />
+              <div
+                id="fileDropZone"
+                class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-green-400 transition-colors duration-200 cursor-pointer"
+              >
+                <svg
+                  class="w-12 h-12 text-gray-400 mx-auto mb-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                  ></path>
+                </svg>
+                <p class="text-gray-600 mb-1">
+                  <span class="font-medium text-green-600"
+                    >Haz clic para subir</span
+                  > o arrastra y suelta
+                </p>
+                <p class="text-xs text-gray-500">
+                  PDF, DOC, DOCX, PNG, JPG, JPEG (máx. 10MB)
+                </p>
+              </div>
+              <div
+                id="fileInfo"
+                class="hidden mt-2 p-3 bg-green-50 border border-green-200 rounded-lg"
+              >
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-2">
+                    <svg
+                      class="w-5 h-5 text-green-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      ></path>
+                    </svg>
+                    <span
+                      id="fileName"
+                      class="text-sm text-green-800 font-medium"></span>
+                  </div>
+                  <button
+                    type="button"
+                    id="removeFile"
+                    class="text-red-500 hover:text-red-700"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          id="errorMessage"
+          class="hidden mt-4 p-3 bg-red-50 border border-red-200 rounded-lg"
+        >
+          <div class="flex items-center">
+            <svg
+              class="w-5 h-5 text-red-400 mr-2"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                clip-rule="evenodd"></path>
+            </svg>
+            <p id="errorText" class="text-red-800 text-sm"></p>
+          </div>
+        </div>
+
+        <div
+          id="successMessage"
+          class="hidden mt-4 p-3 bg-green-50 border border-green-200 rounded-lg"
+        >
+          <div class="flex items-center">
+            <svg
+              class="w-5 h-5 text-green-400 mr-2"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd"></path>
+            </svg>
+            <p class="text-green-800 text-sm">Recurso subido exitosamente</p>
+          </div>
+        </div>
+
+        <div class="flex justify-end space-x-3 mt-6">
+          <button
+            type="button"
+            id="cancelResourceBtn"
+            class="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors duration-200"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            id="submitResourceBtn"
+            class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors duration-200 flex items-center space-x-2"
+          >
+            <span id="submitResourceText">Subir Recurso</span>
+            <svg
+              id="loadingResourceSpinner"
+              class="hidden w-4 h-4 animate-spin"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+          </button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+</div>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const openResourceModalBtn = document.getElementById(
+      "openResourceModalBtn"
+    ) as HTMLButtonElement
+    const closeResourceModalBtn = document.getElementById(
+      "closeResourceModalBtn"
+    ) as HTMLButtonElement
+    const cancelResourceBtn = document.getElementById(
+      "cancelResourceBtn"
+    ) as HTMLButtonElement
+    const resourceModal = document.getElementById(
+      "resourceModal"
+    ) as HTMLDialogElement
+    const resourceForm = document.getElementById(
+      "resourceForm"
+    ) as HTMLFormElement
+    const fileInput = document.getElementById("file") as HTMLInputElement
+    const fileDropZone = document.getElementById("fileDropZone") as HTMLElement
+    const fileInfo = document.getElementById("fileInfo") as HTMLElement
+    const fileName = document.getElementById("fileName") as HTMLElement
+    const removeFile = document.getElementById(
+      "removeFile"
+    ) as HTMLButtonElement
+    const submitResourceBtn = document.getElementById(
+      "submitResourceBtn"
+    ) as HTMLButtonElement
+    const submitResourceText = document.getElementById(
+      "submitResourceText"
+    ) as HTMLElement
+    const loadingResourceSpinner = document.getElementById(
+      "loadingResourceSpinner"
+    ) as HTMLElement
+    const errorMessage = document.getElementById("errorMessage") as HTMLElement
+    const errorText = document.getElementById("errorText") as HTMLElement
+    const successMessage = document.getElementById(
+      "successMessage"
+    ) as HTMLElement
+
+    const idCurso = resourceForm.dataset.curso
+    const idUsuario = resourceForm.dataset.usuario
+
+    function openResourceModal() {
+      resourceModal.showModal()
+    }
+
+    function closeResourceModal() {
+      resourceModal.close()
+      resourceForm.reset()
+      hideMessages()
+      resetSubmitButton()
+      hideFileInfo()
+    }
+
+    function hideMessages() {
+      errorMessage.classList.add("hidden")
+      successMessage.classList.add("hidden")
+    }
+
+    function showError(message: any) {
+      errorText.textContent = message
+      errorMessage.classList.remove("hidden")
+      successMessage.classList.add("hidden")
+    }
+
+    function showSuccess() {
+      successMessage.classList.remove("hidden")
+      errorMessage.classList.add("hidden")
+    }
+
+    function showLoading() {
+      submitResourceBtn.disabled = true
+      submitResourceText.textContent = "Subiendo..."
+      loadingResourceSpinner.classList.remove("hidden")
+    }
+
+    function resetSubmitButton() {
+      submitResourceBtn.disabled = false
+      submitResourceText.textContent = "Subir Recurso"
+      loadingResourceSpinner.classList.add("hidden")
+    }
+
+    function showFileInfo(file: any) {
+      fileName.textContent = file.name
+      fileInfo.classList.remove("hidden")
+      fileDropZone.classList.add("border-green-400", "bg-green-50")
+    }
+
+    function hideFileInfo() {
+      fileInfo.classList.add("hidden")
+      fileDropZone.classList.remove("border-green-400", "bg-green-50")
+      fileInput.value = ""
+    }
+
+    function validateFile(file: any) {
+      const maxSize = 100 * 1024 * 1024
+      if (file.size > maxSize) {
+        showError("El archivo es demasiado grande. Máximo 100MB.")
+        return false
+      }
+      return true
+    }
+
+    openResourceModalBtn.addEventListener("click", openResourceModal)
+    closeResourceModalBtn.addEventListener("click", closeResourceModal)
+    cancelResourceBtn.addEventListener("click", closeResourceModal)
+
+    fileDropZone.addEventListener("click", () => fileInput.click())
+
+    fileInput.addEventListener("change", (e) => {
+      const file = e.target.files[0]
+      if (file && validateFile(file)) {
+        showFileInfo(file)
+        hideMessages()
+      } else if (file) {
+        hideFileInfo()
+      }
+    })
+
+    removeFile.addEventListener("click", hideFileInfo)
+
+    fileDropZone.addEventListener("dragover", (e) => {
+      e.preventDefault()
+      fileDropZone.classList.add("border-green-400", "bg-green-50")
+    })
+
+    fileDropZone.addEventListener("dragleave", (e) => {
+      e.preventDefault()
+      if (!fileInput.files[0]) {
+        fileDropZone.classList.remove("border-green-400", "bg-green-50")
+      }
+    })
+
+    fileDropZone.addEventListener("drop", (e) => {
+      e.preventDefault()
+      const files = e.dataTransfer.files
+      if (files.length > 0) {
+        const file = files[0]
+        if (validateFile(file)) {
+          fileInput.files = files
+          showFileInfo(file)
+          hideMessages()
+        }
+      }
+      fileDropZone.classList.remove("border-green-400", "bg-green-50")
+    })
+
+    resourceModal.addEventListener("click", (e) => {
+      if (e.target === resourceModal) {
+        closeResourceModal()
+      }
+    })
+
+    resourceForm.addEventListener("submit", async (e) => {
+      e.preventDefault()
+
+      const formData = new FormData(resourceForm)
+      const titulo = formData.get("titulo") as string
+      const descripcion = formData.get("descripcion") as string
+      const file = fileInput.files[0]
+
+      if (!file) {
+        showError("Por favor selecciona un archivo")
+        return
+      }
+
+      if (!validateFile(file)) {
+        return
+      }
+
+      hideMessages()
+      showLoading()
+
+      const json = {
+        titulo: titulo.trim(),
+        descripcion: descripcion.trim(),
+        idCurso: Number(idCurso),
+        idUsuario: Number(idUsuario),
+      }
+
+      const uploadFormData = new FormData()
+      uploadFormData.append("file", file)
+      uploadFormData.append("json", JSON.stringify(json))
+
+      try {
+        const response = await fetch("/api/resources/create", {
+          method: "POST",
+          body: uploadFormData,
+        })
+
+        const result = await response.json()
+
+        if (response.ok) {
+          showSuccess()
+          resourceForm.reset()
+          hideFileInfo()
+
+          setTimeout(() => {
+            closeResourceModal()
+            window.location.reload()
+          }, 2000)
+        } else {
+          showError(result.error || "No se pudo subir el recurso.")
+        }
+      } catch (err) {
+        console.error("Error:", err)
+        showError("Error de red o del servidor.")
+      } finally {
+        resetSubmitButton()
+      }
+    })
+  })
+</script>
+
+<style>
+  dialog {
+    margin: auto;
+    border: none;
+    padding: 0;
+  }
+
+  dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  dialog[open] {
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

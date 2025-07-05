@@ -1,0 +1,350 @@
+---
+import UserUpdateModal from "../../components/UserUpdateModal.astro"
+import Layout from "../../layouts/Layout.astro"
+
+const userInfoCookie = Astro.cookies.get("userInfo")?.value
+let userInfo: any = {}
+if (userInfoCookie) {
+  userInfo = JSON.parse(decodeURIComponent(userInfoCookie))
+}
+const userId = userInfo.id
+---
+
+<Layout title="Perfil de Usuario">
+  <div>
+    <div class="max-w-2xl mx-auto">
+
+      <div id="user-data" data-id={userId} hidden></div>
+
+      <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-8">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+              <div
+                class="w-20 h-20 bg-white rounded-full flex items-center justify-center"
+              >
+                <svg
+                  class="w-12 h-12 text-gray-400"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                    clip-rule="evenodd"></path>
+                </svg>
+              </div>
+              <div>
+                <h2 class="text-2xl font-bold text-white" id="nombreHeader">
+                  Usuario
+                </h2>
+              </div>
+            </div>
+            <UserUpdateModal userId={userId} />
+          </div>
+        </div>
+
+        <div class="px-6 py-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-4">
+              <h3
+                class="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2"
+              >
+                Información Personal
+              </h3>
+              <div class="space-y-3">
+                <div>
+                  <label class="block text-sm font-medium text-gray-500 mb-1"
+                    >Nombre</label
+                  >
+                  <p class="text-gray-900 font-medium" id="nombre">-</p>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-500 mb-1"
+                    >Apellido</label
+                  >
+                  <p class="text-gray-900 font-medium" id="apellido">-</p>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-500 mb-1"
+                    >DNI</label
+                  >
+                  <p class="text-gray-900 font-medium" id="dni">-</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <h3
+                class="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2"
+              >
+                Información de Contacto
+              </h3>
+              <div class="space-y-3">
+                <div>
+                  <label class="block text-sm font-medium text-gray-500 mb-1"
+                    >Correo Electrónico</label
+                  >
+                  <p class="text-gray-900 font-medium break-all" id="email">
+                    -
+                  </p>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-500 mb-1"
+                    >Rol</label
+                  >
+                  <p class="text-gray-900 font-medium" id="rol">-</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 pt-6 border-t border-gray-200">
+            <div class="flex w-fit mx-auto gap-4">
+              <div class="bg-gray-50 rounded-lg p-4 text-center">
+                <div class="text-2xl font-bold text-gray-900" id="cursos">
+                  --
+                </div>
+                <div class="text-sm text-gray-500">Cursos</div>
+              </div>
+              <!-- <div class="bg-gray-50 rounded-lg p-4 text-center">
+                <div class="text-2xl font-bold text-gray-900">--</div>
+                <div class="text-sm text-gray-500">Actividades</div>
+              </div>
+              <div class="bg-gray-50 rounded-lg p-4 text-center">
+                <div class="text-2xl font-bold text-gray-900">--</div>
+                <div class="text-sm text-gray-500">Puntuación</div>
+              </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  document.addEventListener("astro:page-load", async () => {
+    const userId = document.getElementById("user-data")?.dataset.id
+    if (!userId) return
+
+    try {
+      const res = await fetch("/api/user/getById", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: userId }),
+      })
+      const user = await res.json()
+
+      const nombreEl = document.getElementById("nombre")
+      if (nombreEl) nombreEl.textContent = user.nombres || "-"
+
+      const apellidoEl = document.getElementById("apellido")
+      if (apellidoEl) apellidoEl.textContent = user.apellidos || "-"
+
+      const dniEl = document.getElementById("dni")
+      if (dniEl) dniEl.textContent = user.dni || "-"
+
+      const emailEl = document.getElementById("email")
+      if (emailEl) emailEl.textContent = user.email || user.username || "-"
+
+      const rolEl = document.getElementById("rol")
+      if (rolEl) rolEl.textContent = user.roles || "-"
+
+      const nombreHeaderEl = document.getElementById("nombreHeader")
+      if (nombreHeaderEl)
+        nombreHeaderEl.textContent = user.nombres || user.username || "Usuario"
+
+      const cursos =
+        user.cursosDocente?.length || user.cursosEstudiantes?.length || 0
+      const cursosEl = document.getElementById("cursos")
+      if (cursosEl) cursosEl.textContent = cursos
+    } catch (error) {
+      console.error("Error al obtener datos del usuario:", error)
+    }
+  })
+</script>
+
+<!-- ---
+import UserUpdateModal from "../../components/UserUpdateModal.astro"
+import Layout from "../../layouts/Layout.astro"
+interface UserInfo {
+  nombre?: string
+  apellido?: string
+  correo?: string
+  dni?: string
+  rol?: "ALUMNO" | "PROFESOR" | "ADMINISTRADOR"
+}
+const userInfoCookie = Astro.cookies.get("userInfo")?.value
+let userInfo: UserInfo = {}
+if (userInfoCookie) {
+  userInfo = JSON.parse(decodeURIComponent(userInfoCookie))
+}
+---
+
+<Layout title="Perfil de Usuario">
+  <div>
+    <div class="max-w-2xl mx-auto">
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Mi Perfil</h1>
+        <p class="text-gray-600 mt-2">Información de tu cuenta</p>
+      </div>
+
+      <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-8">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+              <div
+                class="w-20 h-20 bg-white rounded-full flex items-center justify-center"
+              >
+                <svg
+                  class="w-12 h-12 text-gray-400"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                    clip-rule="evenodd"></path>
+                </svg>
+              </div>
+              <div>
+                <h2 class="text-2xl font-bold text-white">
+                  {
+                    userInfo.nombre && userInfo.apellido
+                      ? `${userInfo.nombre} ${userInfo.apellido}`
+                      : "Usuario"
+                  }
+                </h2>
+                {
+                  userInfo.rol && (
+                    <span
+                      class={`inline-block px-3 py-1 rounded-full text-sm font-medium mt-2`}
+                    >
+                      {userInfo.rol}
+                    </span>
+                  )
+                }
+              </div>
+            </div>
+            <UserUpdateModal />
+          </div>
+        </div>
+
+        <div class="px-6 py-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-4">
+              <h3
+                class="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2"
+              >
+                Información Personal
+              </h3>
+
+              <div class="space-y-3">
+                <div>
+                  <label class="block text-sm font-medium text-gray-500 mb-1"
+                    >Nombre</label
+                  >
+                  <p class="text-gray-900 font-medium">
+                    {userInfo.nombre || "No especificado"}
+                  </p>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-500 mb-1"
+                    >Apellido</label
+                  >
+                  <p class="text-gray-900 font-medium">
+                    {userInfo.apellido || "No especificado"}
+                  </p>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-500 mb-1"
+                    >DNI</label
+                  >
+                  <p class="text-gray-900 font-medium">
+                    {userInfo.dni || "No especificado"}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <h3
+                class="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2"
+              >
+                Información de Contacto
+              </h3>
+
+              <div class="space-y-3">
+                <div>
+                  <label class="block text-sm font-medium text-gray-500 mb-1"
+                    >Correo Electrónico</label
+                  >
+                  <p class="text-gray-900 font-medium break-all">
+                    {userInfo.correo || "No especificado"}
+                  </p>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-medium text-gray-500 mb-1"
+                    >Rol</label
+                  >
+                  <p class="text-gray-900 font-medium">
+                    {userInfo.rol || "No especificado"}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 pt-6 border-t border-gray-200">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="bg-gray-50 rounded-lg p-4 text-center">
+                <div class="text-2xl font-bold text-gray-900">--</div>
+                <div class="text-sm text-gray-500">Cursos</div>
+              </div>
+              <div class="bg-gray-50 rounded-lg p-4 text-center">
+                <div class="text-2xl font-bold text-gray-900">--</div>
+                <div class="text-sm text-gray-500">Actividades</div>
+              </div>
+              <div class="bg-gray-50 rounded-lg p-4 text-center">
+                <div class="text-2xl font-bold text-gray-900">--</div>
+                <div class="text-sm text-gray-500">Puntuación</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {
+        !userInfo.nombre &&
+          !userInfo.apellido &&
+          !userInfo.correo &&
+          !userInfo.dni &&
+          !userInfo.rol && (
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-6">
+              <div class="flex items-center">
+                <svg
+                  class="w-5 h-5 text-yellow-400 mr-2"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                <p class="text-yellow-800">
+                  No se encontró información del usuario. Por favor, inicia
+                  sesión.
+                </p>
+              </div>
+            </div>
+          )
+      }
+    </div>
+  </div>
+</Layout> -->

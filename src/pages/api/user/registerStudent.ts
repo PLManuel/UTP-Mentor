@@ -49,7 +49,9 @@ export const POST: APIRoute = async ({ request }) => {
       )
     }
 
-    return new Response(null, { status: 204 })
+    return new Response(JSON.stringify({ success: true }), {
+      status: 201,
+    })
   } catch (error) {
     return new Response(JSON.stringify({ error: "Error interno" }), {
       status: 500,

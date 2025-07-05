@@ -5,18 +5,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     const data = await request.json()
     const token = cookies.get("authToken")?.value
 
-    if (
-      !data.nombre ||
-      !data.apellido ||
-      !data.dni ||
-      !data.correo ||
-      !data.contraseña ||
-      !token
-    ) {
-      return new Response(JSON.stringify({ error: "Faltan datos o token" }), {
-        status: 400,
-      })
-    }
+    console.log(JSON.stringify(data))
 
     const response = await fetch("http://localhost:8080/usuario/actualizar", {
       method: "PUT",
@@ -24,13 +13,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({
-        nombre: data.nombre,
-        apellido: data.apellido,
-        dni: data.dni,
-        correo: data.correo,
-        contraseña: data.contraseña,
-      }),
+      body: JSON.stringify(data),
     })
 
     if (!response.ok) {
@@ -47,25 +30,25 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
     const updatedUser = await response.json()
 
-    cookies.set(
-      "userInfo",
-      encodeURIComponent(
-        JSON.stringify({
-          nombre: updatedUser.nombres,
-          apellido: updatedUser.apellidos,
-          correo: updatedUser.email,
-          dni: updatedUser.dni,
-          rol: updatedUser.roles,
-        })
-      ),
-      {
-        path: "/",
-        httpOnly: false,
-        secure: !import.meta.env.DEV,
-        sameSite: "strict",
-        maxAge: 60 * 60 * 24,
-      }
-    )
+    // cookies.set(
+    //   "userInfo",
+    //   encodeURIComponent(
+    //     JSON.stringify({
+    //       nombre: updatedUser.nombres,
+    //       apellido: updatedUser.apellidos,
+    //       correo: updatedUser.email,
+    //       dni: updatedUser.dni,
+    //       rol: updatedUser.roles,
+    //     })
+    //   ),
+    //   {
+    //     path: "/",
+    //     httpOnly: false,
+    //     secure: !import.meta.env.DEV,
+    //     sameSite: "strict",
+    //     maxAge: 60 * 60 * 24,
+    //   }
+    // )
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
