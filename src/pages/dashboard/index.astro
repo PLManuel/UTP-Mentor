@@ -1,99 +1,200 @@
 ---
 import Layout from "../../layouts/Layout.astro"
-
-// interface UserInfo {
-//   nombre?: string
-//   apellido?: string
-//   correo?: string
-//   dni?: string
-//   rol?: "ALUMNO" | "PROFESOR" | "ADMINISTRADOR"
-// }
-
-// const userInfoCookie = Astro.cookies.get("userInfo")?.value
-// let userInfo: UserInfo = {}
-// let basePath = "/"
-
-// try {
-//   if (userInfoCookie) {
-//     userInfo = JSON.parse(decodeURIComponent(userInfoCookie))
-
-//     switch (userInfo.rol) {
-//       case "ADMINISTRADOR":
-//         basePath = "/dashboard"
-//         break
-//       case "ALUMNO":
-//         basePath = "/resources"
-//         break
-//       case "PROFESOR":
-//         basePath = "/resources"
-//         break
-//       default:
-//         basePath = "/"
-//     }
-//   }
-// } catch (err) {
-//   console.error("Error al parsear userInfo:", err)
-// }
-
-// const cursos = [
-//   { id: 1, nombre: "Programación III", estudiantes: 25, estado: "Activo" },
-//   { id: 2, nombre: "Inglés Básico", estudiantes: 18, estado: "Activo" },
-//   {
-//     id: 3,
-//     nombre: "Matemáticas Avanzadas",
-//     estudiantes: 12,
-//     estado: "Inactivo",
-//   },
-//   { id: 4, nombre: "Historia Universal", estudiantes: 30, estado: "Activo" },
-// ]
 ---
 
 <Layout title="Dashboard - Panel de Administración">
-  <!-- <div class="">
-    <header class="bg-white shadow-sm border-b border-gray-200">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center py-6">
+  <section class="max-w-7xl mx-auto px-4">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">Dashboard</h1>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div
+        class="card-hover bg-white rounded-xl shadow-sm p-6 border border-gray-100 transition-all duration-200"
+      >
+        <div class="flex items-center justify-between">
           <div>
-            <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
-            <p class="text-gray-600 mt-1">
-              Panel de administración del sistema
-            </p>
+            <p class="text-sm font-medium text-gray-600">Total Usuarios</p>
+            <p class="text-3xl font-bold text-gray-900">4</p>
+          </div>
+          <div
+            class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center"
+          >
+            <svg
+              class="w-6 h-6 text-blue-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+              ></path>
+            </svg>
           </div>
         </div>
       </div>
-    </header>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-100">
-          <div class="flex items-center">
-            <div class="p-3 rounded-full bg-blue-100 mr-4">
-              <svg
-                class="w-6 h-6 text-blue-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                ></path>
-              </svg>
-            </div>
-            <div>
-              <p class="text-sm font-medium text-gray-600">Total Usuarios</p>
-              <p class="text-2xl font-bold text-gray-900">1,234</p>
-            </div>
+      <div
+        class="card-hover bg-white rounded-xl shadow-sm p-6 border border-gray-100 transition-all duration-200"
+      >
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">Profesores</p>
+            <p class="text-3xl font-bold text-gray-900">1</p>
+          </div>
+          <div
+            class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center"
+          >
+            <svg
+              class="w-6 h-6 text-green-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+              ></path>
+            </svg>
           </div>
         </div>
+      </div>
 
-        <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-100">
-          <div class="flex items-center">
-            <div class="p-3 rounded-full bg-green-100 mr-4">
+      <div
+        class="card-hover bg-white rounded-xl shadow-sm p-6 border border-gray-100 transition-all duration-200"
+      >
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">Alumnos</p>
+            <p class="text-3xl font-bold text-gray-900">1</p>
+          </div>
+          <div
+            class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center"
+          >
+            <svg
+              class="w-6 h-6 text-yellow-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+              ></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="card-hover bg-white rounded-xl shadow-sm p-6 border border-gray-100 transition-all duration-200"
+      >
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">Recursos</p>
+            <p class="text-3xl font-bold text-gray-900">4</p>
+            <p class="text-sm text-blue-600">2 cursos</p>
+          </div>
+          <div
+            class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center"
+          >
+            <svg
+              class="w-6 h-6 text-purple-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+              ></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+      <a href="dashboard/usuarios" class="group block">
+        <div
+          class="menu-card bg-white rounded-xl border border-[#e5e7eb] hover:border-[#4f46e5] p-8"
+        >
+          <div class="flex items-start justify-between mb-6">
+            <div class="icon-container bg-indigo-100 p-4 rounded-xl">
               <svg
-                class="w-6 h-6 text-green-600"
+                class="h-8 w-8 text-[#4f46e5]"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path
+                  d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path><path
+                  d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path><path
+                  d="M16 3.13a4 4 0 0 1 0 7.75"></path><path
+                  d="M21 21v-2a4 4 0 0 0 -3 -3.85"></path></svg
+              >
+            </div>
+          </div>
+          <h3
+            class="text-2xl font-bold text-[#1f2937] group-hover:text-[#4f46e5] transition-colors mb-3"
+          >
+            Usuarios
+          </h3>
+          <p class="text-[#6b7280] text-lg mb-4">
+            Gestionar usuarios del sistema
+          </p>
+          <div class="flex items-center text-sm text-[#6b7280]">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 mr-2 text-indigo-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+              ></path>
+            </svg>
+            Administrar roles y permisos
+          </div>
+          <div class="mt-6 flex flex-wrap gap-2">
+            <span
+              class="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-full"
+              >Admins</span
+            >
+            <span
+              class="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-full"
+              >Profesores</span
+            >
+            <span
+              class="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-full"
+              >Alumnos</span
+            >
+          </div>
+        </div>
+      </a>
+
+      <a href="dashboard/cursos" class="group block">
+        <div
+          class="menu-card bg-white rounded-xl border border-[#e5e7eb] hover:border-[#059669] p-8"
+        >
+          <div class="flex items-start justify-between mb-6">
+            <div class="icon-container bg-green-100 p-4 rounded-xl">
+              <svg
+                class="h-8 w-8 text-[#059669]"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -106,219 +207,206 @@ import Layout from "../../layouts/Layout.astro"
                 ></path>
               </svg>
             </div>
-            <div>
-              <p class="text-sm font-medium text-gray-600">Cursos Activos</p>
-              <p class="text-2xl font-bold text-gray-900">42</p>
-            </div>
+          </div>
+          <h3
+            class="text-2xl font-bold text-[#1f2937] group-hover:text-[#059669] transition-colors mb-3"
+          >
+            Cursos
+          </h3>
+          <p class="text-[#6b7280] text-lg mb-4">
+            Ver y gestionar todos los cursos
+          </p>
+          <div class="flex items-center text-sm text-[#6b7280]">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 mr-2 text-green-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            Estados, asignaciones y recursos
+          </div>
+          <div class="mt-6 flex flex-wrap gap-2">
+            <span
+              class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full"
+              >Activos</span
+            >
+            <span
+              class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full"
+              >Habilitados</span
+            >
+            <span
+              class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full"
+              >Recursos</span
+            >
           </div>
         </div>
-      </div>
+      </a>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div class="lg:col-span-2">
-          <h2 class="text-xl font-semibold text-gray-900 mb-6">
-            Módulos de Gestión
-          </h2>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <a
-              href=`${basePath}/usuarios`
-              class="group bg-white rounded-lg shadow-sm border border-gray-100 p-6 hover:shadow-md transition-all duration-200 hover:border-blue-200"
-            >
-              <div class="flex items-center justify-between mb-4">
-                <div
-                  class="p-3 rounded-lg bg-blue-100 group-hover:bg-blue-200 transition-colors duration-200"
-                >
-                  <svg
-                    class="w-8 h-8 text-blue-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
-                    ></path>
-                  </svg>
-                </div>
-                <svg
-                  class="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors duration-200"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 5l7 7-7 7"></path>
-                </svg>
-              </div>
-              <h3 class="text-lg font-semibold text-gray-900 mb-2">
-                Administrar Usuarios
-              </h3>
-              <p class="text-gray-600 text-sm">
-                Gestiona usuarios, roles y permisos del sistema
-              </p>
-            </a>
-
-            <a
-              href=`${basePath}/cursos`
-              class="group bg-white rounded-lg shadow-sm border border-gray-100 p-6 hover:shadow-md transition-all duration-200 hover:border-green-200"
-            >
-              <div class="flex items-center justify-between mb-4">
-                <div
-                  class="p-3 rounded-lg bg-green-100 group-hover:bg-green-200 transition-colors duration-200"
-                >
-                  <svg
-                    class="w-8 h-8 text-green-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                    ></path>
-                  </svg>
-                </div>
-                <svg
-                  class="w-5 h-5 text-gray-400 group-hover:text-green-600 transition-colors duration-200"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 5l7 7-7 7"></path>
-                </svg>
-              </div>
-              <h3 class="text-lg font-semibold text-gray-900 mb-2">
-                Gestionar Cursos
-              </h3>
-              <p class="text-gray-600 text-sm">
-                Administra cursos, contenido y recursos educativos
-              </p>
-            </a>
-
-            <a
-              href=`${basePath}/perfil`
-              class="group bg-white rounded-lg shadow-sm border border-gray-100 p-6 hover:shadow-md transition-all duration-200 hover:border-yellow-200"
-            >
-              <div class="flex items-center justify-between mb-4">
-                <div
-                  class="p-3 rounded-lg bg-yellow-100 group-hover:bg-yellow-200 transition-colors duration-200"
-                >
-                  <svg
-                    class="w-8 h-8 text-yellow-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                    ></path>
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                  </svg>
-                </div>
-                <svg
-                  class="w-5 h-5 text-gray-400 group-hover:text-yellow-600 transition-colors duration-200"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 5l7 7-7 7"></path>
-                </svg>
-              </div>
-              <h3 class="text-lg font-semibold text-gray-900 mb-2">
-                Configuración del Perfil
-              </h3>
-              <p class="text-gray-600 text-sm">
-                Actualiza tu información personal y preferencias
-              </p>
-            </a>
-
-          </div>
-        </div>
-
-        <div class="lg:col-span-1">
-          <div class="bg-white rounded-lg shadow-sm border border-gray-100">
-            <div class="p-6 border-b border-gray-200">
-              <div class="flex items-center justify-between">
-                <h3 class="text-lg font-semibold text-gray-900">
-                  Cursos Recientes
-                </h3>
-                <a
-                  href=`${basePath}/cursos`
-                  class="text-blue-600 hover:text-blue-800 text-sm font-medium"
-                >
-                  Ver todos
-                </a>
-              </div>
+      <!-- <a href="/catalogo" class="group block">
+        <div
+          class="menu-card bg-white rounded-xl border border-[#e5e7eb] hover:border-[#d97706] p-8"
+        >
+          <div class="flex items-start justify-between mb-6">
+            <div class="icon-container bg-amber-100 p-4 rounded-xl">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-8 w-8 text-[#d97706]"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"
+                ></path>
+              </svg>
             </div>
-            <div class="p-6">
-              <div class="space-y-4">
-                {
-                  cursos.map((curso) => (
-                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
-                      <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                          <svg
-                            class="w-5 h-5 text-white"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                            />
-                          </svg>
-                        </div>
-                        <div>
-                          <h4 class="font-medium text-gray-900 text-sm">
-                            {curso.nombre}
-                          </h4>
-                          <p class="text-gray-500 text-xs">
-                            {curso.estudiantes} estudiantes
-                          </p>
-                        </div>
-                      </div>
-                      <span
-                        class={`px-2 py-1 rounded-full text-xs font-medium ${
-                          curso.estado === "Activo"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-gray-100 text-gray-800"
-                        }`}
-                      >
-                        {curso.estado}
-                      </span>
-                    </div>
-                  ))
-                }
-              </div>
+            <div
+              class="text-[#d97706] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"></path>
+              </svg>
             </div>
           </div>
+          <h3
+            class="text-2xl font-bold text-[#1f2937] group-hover:text-[#d97706] transition-colors mb-3"
+          >
+            Catálogo
+          </h3>
+          <p class="text-[#6b7280] text-lg mb-4">
+            Productos y categorías del menú
+          </p>
+          <div class="flex items-center text-sm text-[#6b7280]">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 mr-2 text-amber-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+              ></path>
+            </svg>
+            Platillos, bebidas y postres
+          </div>
+          <div class="mt-6 flex flex-wrap gap-2">
+            <span
+              class="bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded-full"
+              >Platillos</span
+            >
+            <span
+              class="bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded-full"
+              >Bebidas</span
+            >
+            <span
+              class="bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded-full"
+              >Postres</span
+            >
+          </div>
         </div>
-      </div>
+      </a> -->
+
+      <a href="dashboard/perfil" class="group block">
+        <div
+          class="menu-card bg-white rounded-xl border border-[#e5e7eb] hover:border-[#dc2626] p-8"
+        >
+          <div class="flex items-start justify-between mb-6">
+            <div class="icon-container bg-red-100 p-4 rounded-xl">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-8 w-8 text-[#dc2626]"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                ></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+              </svg>
+            </div>
+            <div
+              class="text-[#dc2626] opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"></path>
+              </svg>
+            </div>
+          </div>
+          <h3
+            class="text-2xl font-bold text-[#1f2937] group-hover:text-[#dc2626] transition-colors mb-3"
+          >
+            Ajustes
+          </h3>
+          <p class="text-[#6b7280] text-lg mb-4">Configuración del sistema</p>
+          <div class="flex items-center text-sm text-[#6b7280]">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4 mr-2 text-red-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+              ></path>
+            </svg>
+            Perfil y configuración
+          </div>
+          <div class="mt-6 flex flex-wrap gap-2">
+            <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full"
+              >Perfil</span
+            >
+            <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full"
+              >Datos personales</span
+            >
+          </div>
+        </div>
+      </a>
     </div>
-  </div> -->
+  </section>
 </Layout>
